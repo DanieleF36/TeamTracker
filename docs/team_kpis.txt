@@ -1,0 +1,13 @@
+Efficienza del Team
+	Task completati per periodo: Numero di task completati in un determinato periodo di tempo (giornaliero, settimanale, mensile)
+	Percentuale di task completati in tempo: Percentuale di task completati entro la scadenza rispetto a quelli totali
+Produttività
+	Numero di task per membro del team: Numero di task assegnati e completati da ogni membro del team
+	Task in sospeso: Numero di task che sono stati iniziati ma non ancora completati
+Performance Individuale
+	Task completati per membro del team: Numero di task completati da ciascun membro del team
+	Tempo medio di completamento per membro del team: Il tempo medio impiegato in più o in meno da ciascun membro per completare i task assegnati
+	Feedback sui membri del team: Valutazioni e commenti sui membri del team da parte di altri membri o stakeholder
+Progresso del Progetto
+	Avanzamento del progetto: Percentuale di completamento del progetto
+	

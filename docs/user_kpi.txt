@@ -1,0 +1,9 @@
+Produttività Individuale
+	Task completati: Numero di task completati in un determinato periodo di tempo (giornaliero, settimanale, mensile).
+	Tempo medio di completamento dei task: Il tempo medio impiegato per completare i task assegnati.
+	Numero di task in corso: Numero di task che sono stati iniziati ma non ancora completati.
+Efficienza
+	Tempo dedicato ai task: Numero di ore lavorate sui task assegnati.
+	Percentuale di task completati in tempo: Percentuale di task completati entro la scadenza rispetto al totale dei task assegnati.
+Qualità del Lavoro
+	Feedback ricevuto: Valutazione della qualità del lavoro completato attraverso feedback ricevuti da supervisori, colleghi o clienti.
