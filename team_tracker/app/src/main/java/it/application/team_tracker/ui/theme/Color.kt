@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.theme
+package it.application.team_tracker.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

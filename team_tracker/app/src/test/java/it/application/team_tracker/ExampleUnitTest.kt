@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.team_tracker
 
 import org.junit.Test
 
