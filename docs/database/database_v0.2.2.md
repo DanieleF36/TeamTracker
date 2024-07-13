@@ -1,6 +1,6 @@
 # DATABASE CONFIGURATION
 ## **TABLES**
-### *Attachement*
+### *Attachment*
     This table represents an attachement to a specific task
 - id string ***primary key***
 - url string ***not null***
@@ -78,8 +78,8 @@
 
 ### *Tags*
     This table represents the relationship between tags and tasks
-- id_tag string ***primary key***
-- id_task string ***primary key***
+- id_tag string ***primary key***, ***foreign key***
+- id_task string ***primary key***, ***foreign key***
 
 ###  *Task*
     This table represents a task, with all the information needed
@@ -97,6 +97,7 @@
 - creator string ***not null***, ***foreign key***
 - closer string ***foreign key***
 - priority int ***not null***
+- time_spent float ***not null***
 - team_id string ***not null***, ***foreign key***
 
 ### *Task_member*
