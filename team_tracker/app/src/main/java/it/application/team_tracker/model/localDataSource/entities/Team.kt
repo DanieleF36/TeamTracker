@@ -1,12 +1,17 @@
-package it.application.team_tracker.database.local.entities
+package it.application.team_tracker.model.localDataSource.entities
 
-import android.icu.util.Calendar
+import java.util.Calendar
 import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import it.application.team_tracker.model.localDataSource.converter.Converters
 
-@Entity(tableName = "team")
+@Entity(foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["creator"], onDelete = ForeignKey.CASCADE)],
+        tableName = "team")
+@TypeConverters(Converters::class)
 data class Team (
     @PrimaryKey
     val id: String,
@@ -23,6 +28,5 @@ data class Team (
     @ColumnInfo(name = "creation_date")
     val creationDate: Calendar,
     @ColumnInfo(name = "delivery_date")
-    val deliveryDate: Calendar?,
-    val teamMember: List<String>
+    val deliveryDate: Calendar?
 )

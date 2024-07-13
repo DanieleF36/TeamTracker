@@ -1,4 +1,4 @@
-package it.application.team_tracker.database.local.entities
+package it.application.team_tracker.model.localDataSource.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -9,6 +9,5 @@ data class Tag (
     @PrimaryKey
     val id: String,
     @ColumnInfo(name = "name")
-    val name: String,
-    val tasks: List<String>
+    val name: String
 )

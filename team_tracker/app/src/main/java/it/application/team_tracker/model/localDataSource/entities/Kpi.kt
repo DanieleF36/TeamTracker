@@ -1,10 +1,12 @@
-package it.application.team_tracker.database.local.entities
+package it.application.team_tracker.model.localDataSource.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "kpi")
+@Entity(foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["user_id"], onDelete = ForeignKey.CASCADE)],
+        tableName = "kpi")
 data class Kpi (
     @PrimaryKey
     val id: String,
