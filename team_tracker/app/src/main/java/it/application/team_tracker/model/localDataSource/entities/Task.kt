@@ -4,6 +4,7 @@ import java.util.Calendar
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import it.application.team_tracker.model.localDataSource.converter.Converters
@@ -37,5 +38,5 @@ data class Task (
     @ColumnInfo(name = "team_id")
     val teamId: String,
     @ColumnInfo(name = "time_spent")
-    val timeSpent: Float
+    val timeSpent: Float,
 )

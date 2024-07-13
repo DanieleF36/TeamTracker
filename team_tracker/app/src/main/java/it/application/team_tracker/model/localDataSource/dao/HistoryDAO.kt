@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HistoryDAO {
     @Query("SELECT * FROM history WHERE task_id=:taskId")
-    suspend fun getHistoriesByTask(taskId: String): Flow<History>
+    suspend fun getHistoriesByTask(taskId: String): List<History>
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addHistory(new: History)
+    suspend fun addHistory(history: History)
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addHistories(vararg new: History)
+    suspend fun addHistories(vararg histories: History)
     @Update(onConflict = OnConflictStrategy.ABORT)
-    suspend fun updateHistory(new: History)
+    suspend fun updateHistory(history: History)
     @Query("DELETE FROM history WHERE id=:id")
     suspend fun deleteHistory(id: String)
     @Query("DELETE FROM history WHERE id IN (:ids)")

@@ -11,15 +11,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FeedbackDAO {
     @Query("SELECT * FROM feedback WHERE user_id=:userId")
-    suspend fun getFeedbackByUser(userId: String): Flow<Feedback>
+    suspend fun getFeedbacksByUser(userId: String): List<Feedback>
     @Query("SELECT * FROM feedback WHERE team_id=:teamId")
-    suspend fun getFeedbackByTeam(teamId: String): Flow<Feedback>
+    suspend fun getFeedbacksByTeam(teamId: String): List<Feedback>
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addFeedback(new: Feedback)
+    suspend fun addFeedback(feedback: Feedback)
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addFeedbacks(vararg new: Feedback)
+    suspend fun addFeedbacks(vararg feedbacks: Feedback)
     @Update(onConflict = OnConflictStrategy.ABORT)
-    suspend fun updateFeedback(new: Feedback)
+    suspend fun updateFeedback(feedback: Feedback)
     @Query("DELETE FROM feedback WHERE id=:id")
     suspend fun deleteFeedback(id: String)
     @Query("DELETE FROM feedback WHERE id IN (:ids)")

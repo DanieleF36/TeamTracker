@@ -13,29 +13,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TagDAO {
     @Query("SELECT * FROM tag")
-    suspend fun getTags(): Flow<Tag>
+    suspend fun getTags(): List<Tag>
     @Query("SELECT * FROM tag WHERE name=:name")
-    suspend fun getTagsByName(name: String): Flow<Tag>
+    suspend fun getTagsByName(name: String): List<Tag>
     @Query("SELECT * FROM tag WHERE id IN (SELECT task_id FROM tags WHERE task_id=:taskId)")
-    suspend fun getTagsByTask(taskId: String): Flow<Tag>
-    /**
-     * add a tags not linked with a task
-     */
+    suspend fun getTagsByTask(taskId: String): List<Tag>
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addGenericTag(newTag: Tag)
+    suspend fun addTag(tag: Tag)
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addTagToTask(tags: Tags)
-    @Transaction
-    suspend fun addNewTagToTask(tag: Tag, tags: Tags){
-        addGenericTag(tag)
-        addTagToTask(tags)
-    }
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addTags(vararg new: Tags)
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addTags(vararg new: Tag)
+    suspend fun addTags(vararg tag: Tag)
     @Update(onConflict = OnConflictStrategy.ABORT)
-    suspend fun updateTag(new: Tag)
+    suspend fun updateTag(tag: Tag)
     @Query("DELETE FROM tag WHERE id=:id")
     suspend fun deleteTag(id: String)
 }

@@ -12,15 +12,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AttachmentDAO {
     @Query("SELECT * FROM attachment WHERE id=:id")
-    suspend fun getAttachment(id:String): Flow<Attachment>
+    suspend fun getAttachment(id:String): Attachment
     @Query("SELECT * FROM attachment WHERE task_id=:taskId")
-    suspend fun getAttachmentsByTask(taskId: String): Flow<Attachment>
+    suspend fun getAttachmentsByTask(taskId: String): List<Attachment>
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addAttachment(new: Attachment)
+    suspend fun addAttachment(attachment: Attachment)
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addAttachments(vararg new: Attachment)
+    suspend fun addAttachments(vararg attachments: Attachment)
     @Update(onConflict = OnConflictStrategy.ABORT)
-    suspend fun updateAttachment(new: Attachment)
+    suspend fun updateAttachment(attachment: Attachment)
     @Query("DELETE FROM attachment WHERE id=:id")
     suspend fun deleteAttachment(id: String)
     @Query("DELETE FROM attachment WHERE id IN (:ids)")
