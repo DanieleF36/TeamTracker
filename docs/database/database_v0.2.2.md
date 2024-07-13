@@ -103,6 +103,7 @@
     This table represents the relationship between user and tasks
 - id_user string ***primary key***, ***foreign key***
 - id_task string ***primary key***, ***foreign key***
+- role string ***not null***
 
 ### *Team*
     This table represents a team
