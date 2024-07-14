@@ -20,8 +20,12 @@ abstract class ApplicationDB: RoomDatabase() {
     abstract fun messageDao(): MessageDAO
     abstract fun pageDao(): PageDAO
     abstract fun tagDao(): TagDAO
+    abstract fun tagsDao(): TagsDAO
     abstract fun taskDao(): TaskDAO
     abstract fun taskComplete(): TaskCompleteDAO
     abstract fun teamDao(): TeamDAO
+    abstract fun teamCompleteDao(): TeamCompleteDAO
+    abstract fun teamMemberDao(): TeamMemberDAO
     abstract fun userDao(): UserDAO
+    abstract fun userWithTeamDao(): UserWithTeamDAO
 }

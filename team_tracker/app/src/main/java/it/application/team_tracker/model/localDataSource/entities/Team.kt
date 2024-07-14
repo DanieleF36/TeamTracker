@@ -5,12 +5,14 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import it.application.team_tracker.model.localDataSource.converter.Converters
 
 @Entity(foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["creator"], onDelete = ForeignKey.CASCADE)],
-        tableName = "team")
+        tableName = "team",
+    indices = [Index("creator")])
 @TypeConverters(Converters::class)
 data class Team (
     @PrimaryKey

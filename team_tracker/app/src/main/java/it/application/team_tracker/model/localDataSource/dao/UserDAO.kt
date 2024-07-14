@@ -11,6 +11,10 @@ import it.application.team_tracker.model.localDataSource.entities.User
 interface UserDAO {
     @Query("SELECT * FROM user WHERE id=:id")
     suspend fun getUser(id: String): User
+    @Query("SELECT * FROM user WHERE nickname=:nickname")
+    suspend fun getByNickname(nickname: String): User
+    @Query("SELECT * FROM user WHERE nickname LIKE :nickname")
+    suspend fun getLikeNickname(nickname: String): User
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun addUser(user: User)
     @Insert(onConflict = OnConflictStrategy.ABORT)
