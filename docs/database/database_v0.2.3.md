@@ -133,7 +133,7 @@
 - fullname string ***not null***
 - email string ***not null***
 - location string ***not null***
-- phone int ***not null***
+- phone string ***not null***
 - description string ***not null***
 - photo string 
 - salt string ***not null***
