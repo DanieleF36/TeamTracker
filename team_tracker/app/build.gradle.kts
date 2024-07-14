@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("dagger.hilt.android.plugin")
     kotlin("kapt")
 }
 
@@ -51,6 +52,7 @@ android {
 }
 
 kapt{
+    correctErrorTypes=true
     arguments {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
@@ -78,4 +80,10 @@ dependencies {
     annotationProcessor(libs.androidx.room.room.compiler)
     kapt(libs.androidx.room.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    //Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    kapt(libs.androidx.hilt.compiler)
 }
