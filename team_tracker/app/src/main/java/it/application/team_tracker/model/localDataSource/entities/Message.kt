@@ -4,6 +4,7 @@ import java.util.Calendar
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import it.application.team_tracker.model.localDataSource.converter.Converters
@@ -11,7 +12,8 @@ import it.application.team_tracker.model.localDataSource.converter.Converters
 @Entity(foreignKeys = [ForeignKey(entity = Team::class, parentColumns = ["id"], childColumns = ["team_id"], onDelete = ForeignKey.CASCADE),
                        ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["sender"], onDelete = ForeignKey.CASCADE),
                        ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["receiver"], onDelete = ForeignKey.CASCADE)],
-        tableName = "message")
+        tableName = "message",
+        indices = [Index("team_id"), Index("sender"), Index("receiver")])
 @TypeConverters(Converters::class)
 data class Message (
     @PrimaryKey

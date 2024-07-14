@@ -12,7 +12,8 @@ import it.application.team_tracker.model.localDataSource.converter.Converters
 
 @Entity(foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["user_id"], onDelete = ForeignKey.CASCADE),
                        ForeignKey(entity = Task::class, parentColumns = ["id"], childColumns = ["task_id"], onDelete = ForeignKey.CASCADE)],
-        tableName = "attachment")
+        tableName = "attachment",
+        indices = [Index("user_id"), Index("task_id")])
 @TypeConverters(Converters::class)
 data class Attachment (
     @PrimaryKey

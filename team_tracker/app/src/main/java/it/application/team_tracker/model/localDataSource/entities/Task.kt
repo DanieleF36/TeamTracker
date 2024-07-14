@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import it.application.team_tracker.model.localDataSource.converter.Converters
@@ -12,7 +13,8 @@ import it.application.team_tracker.model.localDataSource.converter.Converters
 @Entity(foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["closer"], onDelete = ForeignKey.CASCADE),
                        ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["creator"], onDelete = ForeignKey.CASCADE),
                        ForeignKey(entity = Team::class, parentColumns = ["id"], childColumns = ["team_id"], onDelete = ForeignKey.CASCADE)],
-        tableName = "task")
+        tableName = "task",
+        indices = [Index("closer"), Index("creator"), Index("team_id")])
 @TypeConverters(Converters::class)
 data class Task (
     @PrimaryKey

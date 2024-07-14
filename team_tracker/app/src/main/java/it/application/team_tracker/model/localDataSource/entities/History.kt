@@ -4,12 +4,14 @@ import java.util.Calendar
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import it.application.team_tracker.model.localDataSource.converter.Converters
 
 @Entity(foreignKeys = [ForeignKey(entity = Task::class, parentColumns = ["id"], childColumns = ["task_id"], onDelete = ForeignKey.CASCADE)],
-        tableName = "history")
+        tableName = "history",
+    indices = [Index("task_id")])
 @TypeConverters(Converters::class)
 data class History (
     @PrimaryKey
