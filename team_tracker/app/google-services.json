@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "534939219306",
+    "project_id": "teamtraker-ad582",
+    "storage_bucket": "teamtraker-ad582.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534939219306:android:45d81de1b7b6f288daa113",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARHmSG4oVcQGkdD1w3n6VtiYDdJnUw2QA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
