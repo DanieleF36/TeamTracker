@@ -5,11 +5,14 @@ plugins {
 }
 
 buildscript {
+    val kotlinVersion by extra("1.9.0")
     repositories {
         google()
         mavenCentral()
     }
     dependencies{
-        classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.gradle)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath(libs.hilt.android.gradle.plugin.v2511)
     }
 }

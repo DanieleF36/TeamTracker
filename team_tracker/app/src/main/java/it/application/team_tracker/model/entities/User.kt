@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.neutralEntities
+package it.application.team_tracker.model.entities
 
 import android.net.Uri
 data class User(
@@ -10,8 +10,8 @@ data class User(
     val phone: String,
     val description: String,
     val photo: Uri?,
-    val teamsId: List<String>,
-    val tasksId: List<String>,
+    val teamsId: List<String>?,
+    val tasksId: List<String>?,
     /** this is the ids of users with this user has started a private chat */
-    val privateChatsId: List<String>
+    val privateChatsId: List<String>?
 )

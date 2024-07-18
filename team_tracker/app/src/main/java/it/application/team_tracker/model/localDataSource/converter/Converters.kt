@@ -6,13 +6,13 @@ import java.util.Calendar
 
 class Converters {
     @TypeConverter
-    fun fromString(value: String): Uri {
-        return value.let { Uri.parse(it) }
+    fun fromString(value: String?): Uri? {
+        return if(value != null) Uri.parse(value) else null
     }
 
     @TypeConverter
-    fun uriToString(uri: Uri): String {
-        return uri.toString()
+    fun uriToString(uri: Uri?): String? {
+        return uri?.toString()
     }
 
     @TypeConverter
