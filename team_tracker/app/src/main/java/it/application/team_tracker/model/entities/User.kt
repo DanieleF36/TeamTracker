@@ -10,7 +10,9 @@ data class User(
     val phone: String,
     val description: String,
     val photo: Uri?,
+    //TODO lo posso cancellare?
     val teamsId: List<String>?,
+    //TODO lo posso cancellare?
     val tasksId: List<String>?,
     /** this is the ids of users with this user has started a private chat */
     val privateChatsId: List<String>?
