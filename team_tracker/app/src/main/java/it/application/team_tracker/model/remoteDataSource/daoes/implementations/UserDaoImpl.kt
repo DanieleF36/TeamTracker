@@ -1,5 +1,6 @@
 package it.application.team_tracker.model.remoteDataSource.daoes.implementations
 
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import it.application.team_tracker.model.remoteDataSource.daoes.interfaces.UserDAO
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class UserDaoImpl: UserDAO {
-    val db = Firebase.firestore
+    private val db = Firebase.firestore
+
     override fun getUser(id: String, listenUpdate: Boolean): Flow<User?> = callbackFlow {
         val docRef = db.collection("/user").document(id)
         if(listenUpdate){
@@ -22,10 +24,16 @@ class UserDaoImpl: UserDAO {
             }
             awaitClose { listener.remove() }
         }
-        else
+        else {
             docRef.get().addOnSuccessListener { doc ->
                 trySend(doc?.toObject(User::class.java))
+            }.addOnFailureListener {
+                err->
+                err
+                //TODO
             }
+        }
+
     }
 
     override fun getByNickname(nickname: String, listenUpdate: Boolean): Flow<User> {

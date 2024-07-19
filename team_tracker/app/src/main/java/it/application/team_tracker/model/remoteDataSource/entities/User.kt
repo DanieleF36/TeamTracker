@@ -1,21 +1,29 @@
 package it.application.team_tracker.model.remoteDataSource.entities
 
+import com.google.firebase.firestore.PropertyName
+
 data class User(
-    val id: String,
-    val nickname: String,
-    val fullName: String,
-    val email: String,
-    val location: String,
-    val phone: String,
-    val description: String,
-    val photo: String?,
+    var id: String = "",
+    var nickname: String = "",
+    @set:PropertyName("fullname")
+    @get:PropertyName("fullname")
+    var fullName: String = "",
+    var email: String = "",
+    var location: String = "",
+    var phone: String = "",
+    var description: String = "",
+    var photo: String? = "",
     /** Map<idTeam, role> */
-    val teamMembers: List<Map<String, String>>,
+    @set:PropertyName("team_members")
+    @get:PropertyName("team_members")
+    var teamMembers: Map<String, String> = emptyMap(),
     /**
        Map<comment || evaluation || teamId, String>
        this map will have always 3 element: comment, evaluation, teamId
      */
-    val feedbacks: List<Map<String, String>>,
+    var feedbacks: Map<String, String> = emptyMap(),
     /** Map<idUser, role> */
-    val taskMembers: List<Map<String, String>>
+    @set:PropertyName("task_members")
+    @get:PropertyName("task_members")
+    var taskMembers: Map<String, String> = emptyMap()
 )
