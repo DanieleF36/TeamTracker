@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserModel {
     fun getLoggedUser(): State<User?>
-    fun getUserLikeNickname(nick: String): Flow<List<User>>
+    fun getUserLikeNickname(nick: String): Flow<User?>
     fun getUser(id: String): Flow<User?>
     suspend fun addUser(user: User)
 }
