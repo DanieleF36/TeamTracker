@@ -1,6 +1,5 @@
 package it.application.team_tracker.model.hiltModule
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import dagger.Module
@@ -8,10 +7,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import it.application.team_tracker.model.UserModel
-import it.application.team_tracker.model.UserModelImpl
-import it.application.team_tracker.model.localDataSource.dao.UserDAO
-import it.application.team_tracker.model.localDataSource.database.ApplicationDB
+import it.application.team_tracker.model.localDataSource.room.dao.AttachmentDAO
+import it.application.team_tracker.model.localDataSource.room.dao.CommentDAO
+import it.application.team_tracker.model.localDataSource.room.dao.HistoryDAO
+import it.application.team_tracker.model.localDataSource.room.dao.UserDAO
+import it.application.team_tracker.model.localDataSource.room.database.ApplicationDB
 import javax.inject.Singleton
 
 @Module
@@ -25,15 +25,20 @@ object DatabaseModule{
             ApplicationDB::class.java,
             "app_db").build()
     }
-
-
     @Provides
     fun provideUserDao(database: ApplicationDB): UserDAO {
         return database.userDao()
     }
     @Provides
-    @Singleton
-    fun provideUserModel(userDao: UserDAO): UserModel {
-        return UserModelImpl(userDao)
+    fun provideAttachmentDAO(database: ApplicationDB): AttachmentDAO{
+        return database.attachmentDao()
+    }
+    @Provides
+    fun provideCommentDAO(database: ApplicationDB): CommentDAO {
+        return database.commentDao()
+    }
+    @Provides
+    fun provideHistoryDAO(database: ApplicationDB): HistoryDAO {
+        return database.historyDao()
     }
 }
