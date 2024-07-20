@@ -1,5 +1,6 @@
 package it.application.team_tracker.model.daoes
 
+import it.application.team_tracker.model.entities.Comment
 import it.application.team_tracker.model.entities.Task
 import kotlinx.coroutines.flow.Flow
 
@@ -26,4 +27,12 @@ interface TaskDAO {
     fun removeUser(taskId: String, userId: String): Flow<Boolean>
 
     fun updateUserRole(userId: String, newRole: String): Flow<Boolean>
+    /**
+     * returns the comments the of the task or null if no comment has been created
+     */
+    fun getComments(taskId: String, listenForUpdates: Boolean = true): Flow<Comment?>
+    /**
+     * add a new comment and return its id
+     */
+    fun addComment(taskId: String, comment: Comment): Flow<String>
 }
