@@ -2,7 +2,7 @@ package it.application.team_tracker.model
 
 import it.application.team_tracker.model.daoes.*
 
-interface DataSource {
+interface LocalDataSource {
      fun attachmentDao(): AttachmentDAO
      //fun commentDao(): CommentDAO
      fun historyDao(): HistoryDAO

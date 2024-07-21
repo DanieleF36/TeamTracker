@@ -3,7 +3,7 @@ package it.application.team_tracker.model.userModel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import it.application.team_tracker.model.DataSource
+import it.application.team_tracker.model.LocalDataSource
 import it.application.team_tracker.model.UserModel
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.Dispatchers
@@ -25,8 +25,8 @@ class UserModelImpl: UserModel {
     val userCache: StateFlow<List<User>> = _userCache
     private val maxSize = 20
     //TODO devono essere dei DAO
-    private lateinit var local: DataSource
-    private lateinit var remote: DataSource
+    private lateinit var local: LocalDataSource
+    private lateinit var remote: LocalDataSource
 
     private fun addUserToCache(user: User){
         _userCache.value.add(user)

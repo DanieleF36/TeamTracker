@@ -1,12 +1,12 @@
 package it.application.team_tracker.model.remoteDataSource
 
-import it.application.team_tracker.model.DataSource
+import it.application.team_tracker.model.RemoteDataSource
 import it.application.team_tracker.model.daoes.*
 import it.application.team_tracker.model.remoteDataSource.daoes.*
 
-class RemoteDataSource: DataSource {
+class RemoteDataSourceImpl: RemoteDataSource {
     override fun attachmentDao(): AttachmentDAO {
-        return AttachmentDAO()
+        TODO()
     }
 
     override fun historyDao(): HistoryDAO {
