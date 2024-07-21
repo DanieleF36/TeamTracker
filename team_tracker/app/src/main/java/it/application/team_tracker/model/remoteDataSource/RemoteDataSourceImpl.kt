@@ -11,23 +11,7 @@ import it.application.team_tracker.model.daoes.remote.TeamDAO
 import it.application.team_tracker.model.daoes.remote.UserDAO
 
 class RemoteDataSourceImpl: RemoteDataSource {
-    override fun attachmentDao(): AttachmentDAO {
-        TODO()
-    }
-
-    override fun historyDao(): HistoryDAO {
-        TODO("Not yet implemented")
-    }
-
-    override fun kpiDao(): KpiDAO {
-        TODO("Not yet implemented")
-    }
-
     override fun messageDao(): MessageDAO {
-        TODO("Not yet implemented")
-    }
-
-    override fun tagDao(): TagDAO {
         TODO("Not yet implemented")
     }
 

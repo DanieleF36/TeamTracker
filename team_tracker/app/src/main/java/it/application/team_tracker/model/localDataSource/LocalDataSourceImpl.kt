@@ -1,23 +1,10 @@
 package it.application.team_tracker.model.localDataSource
 
 import it.application.team_tracker.model.LocalDataSource
-import it.application.team_tracker.model.daoes.remote.AttachmentDAO
-import it.application.team_tracker.model.daoes.remote.HistoryDAO
-import it.application.team_tracker.model.daoes.remote.KpiDAO
-import it.application.team_tracker.model.daoes.remote.MessageDAO
-import it.application.team_tracker.model.daoes.remote.TagDAO
-import it.application.team_tracker.model.daoes.remote.TaskDAO
-import it.application.team_tracker.model.daoes.remote.TeamDAO
-import it.application.team_tracker.model.daoes.remote.UserDAO
-import it.application.team_tracker.model.entities.Attachment
-import it.application.team_tracker.model.entities.History
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
+import it.application.team_tracker.model.daoes.local.*
 
 class LocalDataSourceImpl: LocalDataSource {
-    override fun attachmentDao(): AttachmentDAO {
+    /*override fun attachmentDao(): AttachmentDAO {
         return object : AttachmentDAO {
             @Inject
             lateinit var dao: it.application.team_tracker.model.localDataSource.room.dao.AttachmentDAO
@@ -44,7 +31,7 @@ class LocalDataSourceImpl: LocalDataSource {
                 return it.application.team_tracker.model.localDataSource.room.entities.Attachment(a.id, a.url, a.date, a.taskId, a.userId)
             }
         }
-    }
+    }*/
 
     /*override fun commentDao(): CommentDAO {
         return object: CommentDAO{
@@ -72,7 +59,7 @@ class LocalDataSourceImpl: LocalDataSource {
         }
     }*/
 
-    override fun historyDao(): HistoryDAO {
+    /*override fun historyDao(): HistoryDAO {
         return object: HistoryDAO {
             @Inject
             lateinit var dao: it.application.team_tracker.model.localDataSource.room.dao.HistoryDAO
@@ -86,15 +73,9 @@ class LocalDataSourceImpl: LocalDataSource {
                 return History(h.id, h.type, h.message, h.date, h.taskId)
             }
         }
-    }
+    }*/
 
-    override fun kpiDao(): KpiDAO {
-        TODO("Not yet implemented")
-    }
     override fun messageDao(): MessageDAO {
-        TODO("Not yet implemented")
-    }
-    override fun tagDao(): TagDAO {
         TODO("Not yet implemented")
     }
     override fun taskDao(): TaskDAO {

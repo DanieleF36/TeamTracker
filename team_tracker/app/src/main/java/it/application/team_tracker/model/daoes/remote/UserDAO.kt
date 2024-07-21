@@ -12,8 +12,5 @@ interface UserDAO {
     fun getUserLikeNickname(nickname: String,listenForUpdates: Boolean = true): Flow<User?>
 
     fun updateUser(user: User): Flow<Boolean>
-    /**
-     * add a user and return its id
-     */
-    fun addUser(user: User):Flow<String>
+    //TODO aggiungere funzioni per kpi
 }

@@ -10,14 +10,14 @@ interface MessageDAO {
      * listenForUpdate
      * monthBehind: the first message returned will be sent in date dd/(mm-monthBehind)/yyyy
      */
-    fun getTeamMessages(teamId: String, listenForUpdate: Boolean = false, monthBehind: Int): Flow<Message?>
+    fun getTeamMessages(teamId: String, monthBehind: Int): Flow<Message?>
     /**
      * Returns the messages of the private chat between two person or null if there are no messages
      * userId
      * listenForUpdate
      * monthBehind: the first message returned will be sent in date dd/(mm-monthBehind)/yyyy
      */
-    fun getPrivateMessages(userId: String, listenForUpdate: Boolean = false, monthBehind: Int): Flow<Message?>
+    fun getPrivateMessages(userId: String, monthBehind: Int): Flow<Message?>
     /**
      * Add a new message to a team chat and returns it id
      */
@@ -28,8 +28,8 @@ interface MessageDAO {
     fun sendPrivateMessage(userId: String, message: Message): Flow<String?>
 
     fun setLastReadMessage(userId: String, messageId: String): Flow<Boolean>
-    //TODO da vedere se lasciare listenForUpdates
-    fun getUnreadTeamMessageCount(teamId: String, listenForUpdates: Boolean = true): Flow<Int>
-    //TODO da vedere se lasciare listenForUpdates
-    fun getUnreadPrivateMessageCount(userId: String, listenForUpdates: Boolean = true): Flow<Int>
+    
+    fun getUnreadTeamMessageCount(teamId: String): Flow<Int>
+    
+    fun getUnreadPrivateMessageCount(userId: String): Flow<Int>
 }

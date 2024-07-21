@@ -7,13 +7,14 @@ interface UserDAO {
     /**
      * return the user if it exists or null otherwise
      */
-    fun getUser(userId: String,listenForUpdates: Boolean = true): Flow<User?>
+    fun getUser(userId: String): Flow<User?>
 
-    fun getUserLikeNickname(nickname: String,listenForUpdates: Boolean = true): Flow<User?>
+    fun getUserLikeNickname(nickname: String): Flow<User?>
 
     fun updateUser(user: User): Flow<Boolean>
     /**
      * add a user and return its id
      */
     fun addUser(user: User):Flow<String>
+    //TODO aggiungere funzioni per i kpi
 }
