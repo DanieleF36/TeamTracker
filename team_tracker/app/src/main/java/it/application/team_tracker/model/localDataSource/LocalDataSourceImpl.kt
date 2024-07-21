@@ -1,7 +1,14 @@
 package it.application.team_tracker.model.localDataSource
 
 import it.application.team_tracker.model.LocalDataSource
-import it.application.team_tracker.model.daoes.*
+import it.application.team_tracker.model.daoes.remote.AttachmentDAO
+import it.application.team_tracker.model.daoes.remote.HistoryDAO
+import it.application.team_tracker.model.daoes.remote.KpiDAO
+import it.application.team_tracker.model.daoes.remote.MessageDAO
+import it.application.team_tracker.model.daoes.remote.TagDAO
+import it.application.team_tracker.model.daoes.remote.TaskDAO
+import it.application.team_tracker.model.daoes.remote.TeamDAO
+import it.application.team_tracker.model.daoes.remote.UserDAO
 import it.application.team_tracker.model.entities.Attachment
 import it.application.team_tracker.model.entities.History
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +18,7 @@ import javax.inject.Inject
 
 class LocalDataSourceImpl: LocalDataSource {
     override fun attachmentDao(): AttachmentDAO {
-        return object :AttachmentDAO{
+        return object : AttachmentDAO {
             @Inject
             lateinit var dao: it.application.team_tracker.model.localDataSource.room.dao.AttachmentDAO
             override fun getTaskAttachments(taskId: String, listenForUpdates: Boolean): Flow<Attachment?> {
@@ -66,7 +73,7 @@ class LocalDataSourceImpl: LocalDataSource {
     }*/
 
     override fun historyDao(): HistoryDAO {
-        return object: HistoryDAO{
+        return object: HistoryDAO {
             @Inject
             lateinit var dao: it.application.team_tracker.model.localDataSource.room.dao.HistoryDAO
             override fun getTaskHistory(taskId: String, listenForUpdates: Boolean): Flow<History?> {

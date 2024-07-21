@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.daoes
+package it.application.team_tracker.model.daoes.local
 
 import it.application.team_tracker.model.entities.History
 import kotlinx.coroutines.flow.Flow

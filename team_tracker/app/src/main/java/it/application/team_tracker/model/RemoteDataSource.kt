@@ -1,13 +1,13 @@
 package it.application.team_tracker.model
 
-import it.application.team_tracker.model.daoes.AttachmentDAO
-import it.application.team_tracker.model.daoes.HistoryDAO
-import it.application.team_tracker.model.daoes.KpiDAO
-import it.application.team_tracker.model.daoes.MessageDAO
-import it.application.team_tracker.model.daoes.TagDAO
-import it.application.team_tracker.model.daoes.TaskDAO
-import it.application.team_tracker.model.daoes.TeamDAO
-import it.application.team_tracker.model.daoes.UserDAO
+import it.application.team_tracker.model.daoes.remote.AttachmentDAO
+import it.application.team_tracker.model.daoes.remote.HistoryDAO
+import it.application.team_tracker.model.daoes.remote.KpiDAO
+import it.application.team_tracker.model.daoes.remote.MessageDAO
+import it.application.team_tracker.model.daoes.remote.TagDAO
+import it.application.team_tracker.model.daoes.remote.TaskDAO
+import it.application.team_tracker.model.daoes.remote.TeamDAO
+import it.application.team_tracker.model.daoes.remote.UserDAO
 
 interface RemoteDataSource {
     fun attachmentDao(): AttachmentDAO

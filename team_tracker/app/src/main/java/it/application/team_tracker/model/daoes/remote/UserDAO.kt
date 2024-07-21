@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.daoes
+package it.application.team_tracker.model.daoes.remote
 
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.flow.Flow

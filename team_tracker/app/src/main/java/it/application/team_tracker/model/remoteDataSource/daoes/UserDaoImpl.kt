@@ -2,7 +2,7 @@ package it.application.team_tracker.model.remoteDataSource.daoes
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import it.application.team_tracker.model.daoes.UserDAO
+import it.application.team_tracker.model.daoes.remote.UserDAO
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

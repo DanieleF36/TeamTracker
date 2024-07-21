@@ -1,6 +1,6 @@
 package it.application.team_tracker.model
 
-import it.application.team_tracker.model.daoes.*
+import it.application.team_tracker.model.daoes.local.*
 
 interface LocalDataSource {
      fun attachmentDao(): AttachmentDAO
