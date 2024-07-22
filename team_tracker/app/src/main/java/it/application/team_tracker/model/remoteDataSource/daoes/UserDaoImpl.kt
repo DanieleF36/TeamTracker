@@ -50,8 +50,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun updateUser(oldUser: User, newUser: User): Flow<Boolean> {
-        val map = findDifferences(oldUser, newUser)
-        return updateDocument("/users/${newUser.id}", map)
+        return updateDocument("/users/${newUser.id}", oldUser, newUser)
     }
 
     private fun fromRemoteToNeutral(u: it.application.team_tracker.model.remoteDataSource.entities.User): User{

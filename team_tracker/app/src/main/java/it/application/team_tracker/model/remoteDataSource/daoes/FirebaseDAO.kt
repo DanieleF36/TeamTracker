@@ -108,19 +108,19 @@ abstract class FirebaseDAO {
      * Updates an already existing document.
      *
      * @param documentPath a String
-     * @param newParameters a `Map` representing the fields to update
      * @return a Flow<Boolean> that emits `true` in case of success or `false` in case of error
      *
      */
-    protected fun updateDocument(documentPath: String, newParameters: Map<String, Any>): Flow<Boolean> = callbackFlow {
-            db.document(documentPath).update(newParameters).addOnSuccessListener {
-                trySend(true)
-            }.addOnFailureListener {
-                trySend(false)
-            }
+    protected fun <T : Any> updateDocument(documentPath: String, old: T, new: T): Flow<Boolean> = callbackFlow {
+        val newParameters = findDifferences(old, new)
+        db.document(documentPath).update(newParameters).addOnSuccessListener {
+            trySend(true)
+        }.addOnFailureListener {
+            trySend(false)
         }
+    }
 
-    protected fun <T: Any> findDifferences(old: T, new: T): Map<String, Any>{
+    private fun <T: Any> findDifferences(old: T, new: T): Map<String, Any>{
         val kClass = old.javaClass.kotlin
         val ret = emptyMap<String, Any>().toMutableMap()
         kClass.declaredMemberProperties.forEach {
