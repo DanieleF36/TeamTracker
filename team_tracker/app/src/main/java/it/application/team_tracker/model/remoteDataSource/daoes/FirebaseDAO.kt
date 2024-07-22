@@ -9,6 +9,7 @@ import it.application.team_tracker.model.remoteDataSource.entities.Entity
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlin.reflect.full.declaredMemberProperties
 
 abstract class FirebaseDAO {
     protected val db = Firebase.firestore
@@ -118,4 +119,17 @@ abstract class FirebaseDAO {
                 trySend(false)
             }
         }
+
+    protected fun <T: Any> findDifferences(old: T, new: T): Map<String, Any>{
+        val kClass = old.javaClass.kotlin
+        val ret = emptyMap<String, Any>().toMutableMap()
+        kClass.declaredMemberProperties.forEach {
+            val valueOld = it.get(old)
+            val valueNew = it.get(new)
+            if(valueNew != null && valueOld != null && valueNew != valueOld){
+                ret[it.name] = valueNew
+            }
+        }
+        return ret.toMap()
+    }
 }

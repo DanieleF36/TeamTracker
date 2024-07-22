@@ -1,52 +1,73 @@
 package it.application.team_tracker.model.remoteDataSource.daoes
 
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import android.net.Uri
+import it.application.team_tracker.model.daoes.remote.ChangeType
 import it.application.team_tracker.model.daoes.remote.UserDAO
 import it.application.team_tracker.model.entities.User
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 
-class UserDaoImpl: UserDAO {
-    private val db = Firebase.firestore
-
-    override fun getUser(userId: String, listenForUpdates: Boolean): Flow<User?> = callbackFlow {
-        val docRef = db.collection("/user").document(userId)
-        if(listenForUpdates){
-            val listener = docRef.addSnapshotListener { doc, error ->
-                if(error == null){
-                    trySend(doc?.toObject(User::class.java))
-                }
-                else
-                    throw error
-            }
-            awaitClose { listener.remove() }
+class UserDaoImpl: FirebaseDAO(), UserDAO {
+    override fun getUser(userId: String): Flow<User?> {
+        return getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("users/$userId").map {
+            if(it != null)
+                fromRemoteToNeutral(it)
+            else
+                null
         }
-        else {
-            docRef.get().addOnSuccessListener { doc ->
-                trySend(doc?.toObject(User::class.java))
-            }.addOnFailureListener {
-                err->
-                err
-                //TODO
-            }
+    }
+
+    override fun getUserWithUpdate(userId: String): Flow<Pair<ChangeType, User>?>{
+        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>("users/$userId").map {
+            if(it != null)
+                Pair(it.first,fromRemoteToNeutral(it.second))
+            else
+                null
         }
-
     }
 
-    override fun getUserLikeNickname(
-        nickname: String,
-        listenForUpdates: Boolean
-    ): Flow<it.application.team_tracker.model.entities.User?> {
-        TODO("Not yet implemented")
+    override fun getUserLikeNickname(nickname: String): Flow<User?> {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
+            it?.nickname?.contains(nickname) ?: false
+        }.map {
+            if(it != null)
+                fromRemoteToNeutral(it)
+            else
+                null
+        }
     }
 
-    override fun updateUser(user: it.application.team_tracker.model.entities.User): Flow<Boolean> {
-        TODO("Not yet implemented")
+    override fun getUserLikeNicknameWithUpdate(nickname: String): Flow<Pair<ChangeType, User>?> {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
+            it?.second?.nickname?.contains(nickname) ?: false
+        }.map {
+            if(it != null)
+                Pair(it.first, fromRemoteToNeutral(it.second))
+            else
+                null
+        }
     }
 
-    override fun addUser(user: it.application.team_tracker.model.entities.User): Flow<String> {
-        TODO("Not yet implemented")
+    override fun updateUser(oldUser: User, newUser: User): Flow<Boolean> {
+        val map = findDifferences(oldUser, newUser)
+        return updateDocument("/users/${newUser.id}", map)
     }
+
+    private fun fromRemoteToNeutral(u: it.application.team_tracker.model.remoteDataSource.entities.User): User{
+        return User(
+            u.id,
+            u.nickname,
+            u.fullName,
+            u.email,
+            u.location,
+            u.phone,
+            u.description,
+            if(u.photo!=null) Uri.parse(u.photo) else null,
+            u.teamMembers.map { it.key },
+            u.taskMembers.map { it.key },
+            null
+        )
+    }
+
 }
