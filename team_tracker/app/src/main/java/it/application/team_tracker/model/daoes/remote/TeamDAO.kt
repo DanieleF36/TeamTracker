@@ -11,7 +11,11 @@ interface TeamDAO {
     /**
      * returns the teams of which the user is a member or null if it is not a member of any team
      */
-    fun getUserTeams(userId: String, listenForUpdates: Boolean = true, onUpdate: (ChangeType)->Unit): Flow<Team?>
+    fun getUserTeams(userId: String): Flow<Team?>
+    /**
+     * returns a pair of change type linked to the team of which the user is a member or null if it is not a member of any team
+     */
+    fun getUserTeams(userId: String, listenForUpdates: Boolean = true): Flow<Pair<ChangeType, Team>?>
 
     fun updateTeam(team: Team): Flow<Boolean>
 
