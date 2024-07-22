@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 
 
 data class Team (
-    val id: String,
+    override val id: String,
     val name: String,
     val description: String?,
     val invitationLink: String?,
@@ -19,4 +19,4 @@ data class Team (
        this map will have always 3 element: comment, evaluation, teamId
      */
     val feedbacks: List<Map<String, String>>
-)
+):Entity

@@ -3,7 +3,7 @@ package it.application.team_tracker.model.remoteDataSource.entities
 import com.google.firebase.firestore.PropertyName
 
 data class User(
-    var id: String = "",
+    override var id: String = "",
     var nickname: String = "",
     @set:PropertyName("fullname")
     @get:PropertyName("fullname")
@@ -26,4 +26,4 @@ data class User(
     @set:PropertyName("task_members")
     @get:PropertyName("task_members")
     var taskMembers: Map<String, String> = emptyMap()
-)
+):Entity

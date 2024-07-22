@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 
 
 data class Task(
-    val id: String,
+    override val id: String,
     val name: String,
     val description: String,
     val dueDate: Timestamp,
@@ -20,4 +20,4 @@ data class Task(
     val taskMembers: List<Map<String, String>>,
     /** idTask */
     val tags: List<String>
-)
+): Entity
