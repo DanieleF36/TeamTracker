@@ -75,9 +75,7 @@ abstract class FirebaseDAO {
         awaitClose { listener.remove() }
     }
 
-    protected inline fun <reified T> getDocument(
-        documentPath: String
-    ): Flow<T?> = callbackFlow {
+    protected inline fun <reified T> getDocument(documentPath: String): Flow<T?> = callbackFlow {
         db.document(documentPath).get().addOnSuccessListener { value ->
             if(value != null)
                 trySend(value.toObject(T::class.java))
@@ -130,5 +128,13 @@ abstract class FirebaseDAO {
             }
         }
         return ret.toMap()
+    }
+
+    protected fun deleteDocument(documentPath: String): Flow<Boolean> = callbackFlow {
+        db.document(documentPath).delete().addOnSuccessListener {
+            trySend(true)
+        }.addOnFailureListener {
+            trySend(false)
+        }
     }
 }
