@@ -18,6 +18,5 @@ data class Task(
     val timeSpent: Float,
     /** Map<idUser, role> */
     val taskMembers: List<Map<String, String>>,
-    /** idTask */
     val tags: List<String>
 ): Entity
