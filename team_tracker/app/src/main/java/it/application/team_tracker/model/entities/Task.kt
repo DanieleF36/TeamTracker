@@ -15,6 +15,6 @@ data class Task(
     val teamId: String,
     val timeSpent: Float,
     /** Map<idUser, role> */
-    val taskMembers: List<Map<String, String>>,
+    val taskMembers: Map<String, String>,
     val tags: List<String>
 )

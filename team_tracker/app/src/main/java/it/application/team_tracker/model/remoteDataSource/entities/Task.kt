@@ -17,6 +17,8 @@ data class Task(
     val teamId: String,
     val timeSpent: Float,
     /** Map<idUser, role> */
-    val taskMembers: List<Map<String, String>>,
+    val membersAndRole: Map<String, String>,
+    /** It contains all the ids of he members */
+    val members: List<String>,
     val tags: List<String>
 ): Entity
