@@ -16,7 +16,7 @@ interface MessageDAO {
      * listenForUpdate
      * monthBehind: the first message returned will be sent in date dd/(mm-monthBehind)/yyyy
      */
-    fun getTeamMessages(teamId: String, monthBehind: Int, listenForUpdate: Boolean = true): Flow<Pair<ChangeType, Message>?>
+    fun getTeamMessagesWithUpdate(teamId: String, monthBehind: Int): Flow<Pair<ChangeType, Message>?>
     /**
      * Returns the messages of the private chat between two person or null if there are no messages
      * userId
@@ -29,7 +29,7 @@ interface MessageDAO {
      * listenForUpdate
      * monthBehind: the first message returned will be sent in date dd/(mm-monthBehind)/yyyy
      */
-    fun getPrivateMessages(userId: String, monthBehind: Int, listenForUpdate: Boolean = true): Flow<Pair<ChangeType, Message>?>
+    fun getPrivateMessagesWithUpdate(userId: String, monthBehind: Int): Flow<Pair<ChangeType, Message>?>
     /**
      * Add a new message to a team chat and returns it id
      */
@@ -39,13 +39,15 @@ interface MessageDAO {
      */
     fun sendPrivateMessage(userId: String, message: Message): Flow<String?>
 
-    fun setLastReadMessage(userId: String, messageId: String): Flow<Boolean>
+    fun setLastTeamReadMessage(teamId: String, userId: String, messageId: String): Flow<Boolean>
 
-    fun getUnreadTeamMessageCount(teamId: String): Flow<Int>
+    fun setLastPrivateReadMessage(receiverId: String, userId: String,messageId: String): Flow<Boolean>
 
-    fun getUnreadTeamMessageCount(teamId: String, listenForUpdates: Boolean = true): Flow<Int>
+    fun getUnreadTeamMessageCount(userId: String, teamId: String): Flow<Int>
 
-    fun getUnreadPrivateMessageCount(userId: String): Flow<Int>
+    fun getUnreadTeamMessageCountWithUpdate(userId: String, teamId: String): Flow<Int>
 
-    fun getUnreadPrivateMessageCount(userId: String, listenForUpdates: Boolean = true): Flow<Int>
+    fun getUnreadPrivateMessageCount(receiverId: String, userId: String): Flow<Int>
+
+    fun getUnreadPrivateMessageCountWithUpdate(receiverId: String, userId: String): Flow<Int>
 }
