@@ -8,5 +8,9 @@ data class Message(
     val date: Timestamp,
     val teamId: String?,
     val sender: String,
-    val receiver: String?
+    val receiver: String?,
+    /**
+     * This is used for team message and if there is some userId this is his lastReadMessage
+     */
+    val isLastRead: List<String>
 ): Entity
