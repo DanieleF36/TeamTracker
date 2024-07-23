@@ -95,12 +95,11 @@ abstract class FirebaseDAO {
      * @return a Flow<Boolean> that emits `true` in case of success or `false` in case of error
      *
      */
-    protected fun addDocument(collectionPath: String, obj: Entity): Flow<Boolean> = callbackFlow {
-        val coll = db.collection(collectionPath)
-        coll.document(obj.id).set(obj).addOnSuccessListener {
-            trySend(true)
+    protected fun addDocument(collectionPath: String, obj: Entity): Flow<String?> = callbackFlow {
+        db.collection(collectionPath).add(obj).addOnSuccessListener {
+            trySend(it.id)
         }.addOnFailureListener {
-            trySend(false)
+            TODO()
         }
     }
 
