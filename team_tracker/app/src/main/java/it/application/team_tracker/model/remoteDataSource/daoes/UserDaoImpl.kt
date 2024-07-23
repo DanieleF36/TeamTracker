@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 
 class UserDaoImpl: FirebaseDAO(), UserDAO {
     override fun getUser(userId: String): Flow<User?> {
-        return getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("users/$userId").map {
+        return getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -19,7 +19,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getUserWithUpdate(userId: String): Flow<Pair<ChangeType, User>?>{
-        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>("users/$userId").map {
+        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").map {
             if(it != null)
                 Pair(it.first,fromRemoteToNeutral(it.second))
             else
@@ -28,7 +28,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getUserLikeNickname(nickname: String): Flow<User?> {
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("/users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
             it?.nickname?.contains(nickname) ?: false
         }.map {
             if(it != null)
@@ -39,7 +39,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getUserLikeNicknameWithUpdate(nickname: String): Flow<Pair<ChangeType, User>?> {
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("/users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
             it?.second?.nickname?.contains(nickname) ?: false
         }.map {
             if(it != null)
@@ -68,5 +68,4 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
             null
         )
     }
-
 }
