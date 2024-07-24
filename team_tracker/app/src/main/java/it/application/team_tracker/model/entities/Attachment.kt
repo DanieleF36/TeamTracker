@@ -5,7 +5,7 @@ import java.util.Calendar
 
 data class Attachment(
     val id: String,
-    val url: Uri,
+    var url: Uri,
     val creator: String,
     val date: Calendar,
     val taskId: String,

@@ -1,9 +1,11 @@
 package it.application.team_tracker.model.remoteDataSource.daoes
 
+import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import it.application.team_tracker.model.daoes.remote.ChangeType
 import it.application.team_tracker.model.remoteDataSource.entities.Entity
 import kotlinx.coroutines.channels.awaitClose
@@ -13,6 +15,7 @@ import kotlin.reflect.full.declaredMemberProperties
 
 abstract class FirebaseDAO {
     protected val db = Firebase.firestore
+    private val storage = FirebaseStorage.getInstance().reference
 
     protected fun toChangeType(change: DocumentChange): ChangeType {
         return when(change.type) {
@@ -132,6 +135,31 @@ abstract class FirebaseDAO {
 
     protected fun deleteDocument(documentPath: String): Flow<Boolean> = callbackFlow {
         db.document(documentPath).delete().addOnSuccessListener {
+            trySend(true)
+        }.addOnFailureListener {
+            trySend(false)
+        }
+    }
+
+    private fun randomString(len: Int): String{
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return String(CharArray(len) { allowedChars.random() })
+    }
+
+    /** Returns the uri used to save the attachment */
+    protected fun uploadAttachment(taskId: String, uri: Uri, name: String): Flow<String?> = callbackFlow {
+        val randomString = randomString(16)
+        val ref = storage.child("attachments/$taskId/${name}_$randomString")
+        ref.putFile(uri).addOnSuccessListener {
+            trySend("attachments/$taskId/${name}_$randomString")
+        }.addOnFailureListener {
+            trySend(null)
+        }
+    }
+
+    protected fun removeAttachment(uri: Uri): Flow<Boolean> = callbackFlow {
+        val ref = storage.child(uri.toString())
+        ref.delete().addOnSuccessListener {
             trySend(true)
         }.addOnFailureListener {
             trySend(false)

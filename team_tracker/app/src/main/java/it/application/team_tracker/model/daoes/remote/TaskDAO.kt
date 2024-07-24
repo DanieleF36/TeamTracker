@@ -1,5 +1,7 @@
 package it.application.team_tracker.model.daoes.remote
 
+import android.content.Context
+import android.net.Uri
 import it.application.team_tracker.model.entities.Attachment
 import it.application.team_tracker.model.entities.Comment
 import it.application.team_tracker.model.entities.History
@@ -64,10 +66,8 @@ interface TaskDAO {
      * returns a pair of change type linked to the attachments of the task or null if no attachment has been uploaded to it
      */
     fun getTaskAttachmentsWithUpdate(taskId: String): Flow<Pair<ChangeType, Attachment>?>
-    /**
-     * returns a specific attachment to or null if it does not exist
-     */
-    fun getAttachment(idAttachment: String): Flow<Attachment?>
+
+    fun downloadAttachment(context: Context, uri: Uri)
     /**
      * add a new attachment and return its id
      */

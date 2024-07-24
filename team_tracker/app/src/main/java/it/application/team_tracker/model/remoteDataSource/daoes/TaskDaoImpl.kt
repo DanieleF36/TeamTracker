@@ -1,6 +1,9 @@
 package it.application.team_tracker.model.remoteDataSource.daoes
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import androidx.core.content.ContextCompat.startForegroundService
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import it.application.team_tracker.model.daoes.remote.ChangeType
@@ -9,6 +12,7 @@ import it.application.team_tracker.model.entities.Attachment
 import it.application.team_tracker.model.entities.Comment
 import it.application.team_tracker.model.entities.History
 import it.application.team_tracker.model.entities.Task
+import it.application.team_tracker.model.remoteDataSource.DownloadService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
@@ -151,12 +155,25 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         }
     }
 
-    override fun getAttachment(idAttachment: String): Flow<Attachment?> {
-        TODO("Not yet implemented")
+    override fun downloadAttachment(context: Context, uri: Uri) {
+        val intent = Intent(context, DownloadService::class.java)
+        startForegroundService(context, intent)
     }
 
-    override fun addAttachment(attachment: Attachment): Flow<String?> {
-        return addDocument("/attachments", fromNeutralToRemote(attachment))
+    override fun addAttachment(attachment: Attachment): Flow<String?> = callbackFlow{
+        uploadAttachment(attachment.taskId, attachment.url, attachment.url.lastPathSegment!!).collect { uri ->
+            if(uri != null)
+                addDocument("/attachments", fromNeutralToRemote(attachment)).collect { id ->
+                    if(id != null)
+                        trySend(id)
+                    else {
+                        removeAttachment(Uri.parse(uri))
+                        trySend(null)
+                    }
+                }
+
+        }
+
     }
 
     override fun getTaskHistory(taskId: String): Flow<History?> {
