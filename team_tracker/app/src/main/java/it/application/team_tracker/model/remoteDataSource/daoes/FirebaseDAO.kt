@@ -141,7 +141,7 @@ abstract class FirebaseDAO {
         }
     }
 
-    private fun randomString(len: Int): String{
+    protected fun randomString(len: Int): String{
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         return String(CharArray(len) { allowedChars.random() })
     }
