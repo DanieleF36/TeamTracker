@@ -1,12 +1,17 @@
 package it.application.team_tracker.model.remoteDataSource.daoes
 
 import android.net.Uri
+import com.google.firebase.Timestamp
 import it.application.team_tracker.model.daoes.remote.ChangeType
 import it.application.team_tracker.model.daoes.remote.UserDAO
+import it.application.team_tracker.model.entities.Feedback
+import it.application.team_tracker.model.entities.Team
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import java.util.Calendar
 
 class UserDaoImpl: FirebaseDAO(), UserDAO {
     override fun getUser(userId: String): Flow<User?> {
@@ -59,6 +64,54 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
         return updateDocument("/teams/$teamId", old, new)
     }
 
+    override fun getTeams(userId: String): Flow<Team?> = callbackFlow {
+        /*val query = db.collection("/teams").whereArrayContains("members", userId)
+        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
+            if(it != null)
+                fromRemoteToNeutral(it)
+            else
+                null
+        }*/
+        getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").collect{ user ->
+            if(user != null) {
+                val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
+                getCollection<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
+                    if(it != null)
+                        trySend(fromRemoteToNeutral(it))
+                    else
+                        trySend(null)
+                }
+            }
+            else{
+                TODO("err")
+            }
+        }
+    }
+
+    override fun getTeamsWithUpdate(userId: String): Flow<Pair<ChangeType, Team>?> = callbackFlow{
+        /*val query = db.collection("/teams").whereArrayContains("members", userId)
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
+            if(it != null)
+                Pair(it.first, fromRemoteToNeutral(it.second))
+            else
+                null
+        }*/
+        getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").collect{ user ->
+            if(user != null) {
+                val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
+                getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
+                    if(it != null)
+                        trySend(Pair(it.first, fromRemoteToNeutral(it.second)))
+                    else
+                        trySend(null)
+                }
+            }
+            else{
+                TODO("err")
+            }
+        }
+    }
+
     private fun fromRemoteToNeutral(u: it.application.team_tracker.model.remoteDataSource.entities.User): User{
         return User(
             u.id,
@@ -72,6 +125,41 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
             u.teamMembers.map { it.key },
             u.taskMembers.map { it.key },
             null
+        )
+    }
+
+    private fun fromNeutralToRemote(t: Team): it.application.team_tracker.model.remoteDataSource.entities.Team{
+        return it.application.team_tracker.model.remoteDataSource.entities.Team(
+            t.id,
+            t.name,
+            t.description,
+            t.invitationLink,
+            t.photo.toString(),
+            t.creator,
+            Timestamp(t.creationDate.time),
+            if(t.deliveryDate != null) Timestamp(t.deliveryDate.time) else null,
+            t.teamMembers,
+            t.teamMembers.keys.toList(),
+            t.feedbacks.map {
+                mapOf("comment" to it.comment, "evaluation" to it.evaluation.toString(), "userId" to it.userId)
+            }
+        )
+    }
+
+    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.entities.Team): Team{
+        return Team(
+            t.id,
+            t.name,
+            t.description,
+            t.invitationLink,
+            if(t.photo != null) Uri.parse(t.photo) else null,
+            t.creator,
+            Calendar.getInstance().apply { timeInMillis = t.creationDate.seconds },
+            if(t.deliveryDate != null) Calendar.getInstance().apply { timeInMillis = t.deliveryDate.seconds } else null,
+            t.membersAndRole,
+            t.feedbacks.map {
+                Feedback("", it.get("comment")!!, it.get("evaluation")!!.toInt(), it.get("userId")!!)
+            }
         )
     }
 }
