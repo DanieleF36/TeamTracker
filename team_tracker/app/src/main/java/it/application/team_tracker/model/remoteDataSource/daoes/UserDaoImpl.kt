@@ -53,6 +53,12 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
         return updateDocument("/users/${newUser.id}", oldUser, newUser)
     }
 
+    override fun setFavoriteTeam(teamId: String, userId: String, add: Boolean): Flow<Boolean> {
+        val old = object {val favoriteTeam = if(!add) listOf(teamId) else emptyList() }
+        val new = object {val favoriteTeam = if(add) listOf(teamId) else emptyList() }
+        return updateDocument("/teams/$teamId", old, new)
+    }
+
     private fun fromRemoteToNeutral(u: it.application.team_tracker.model.remoteDataSource.entities.User): User{
         return User(
             u.id,

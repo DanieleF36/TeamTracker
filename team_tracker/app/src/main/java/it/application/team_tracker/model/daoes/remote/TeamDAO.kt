@@ -4,10 +4,7 @@ import it.application.team_tracker.model.entities.Team
 import kotlinx.coroutines.flow.Flow
 
 interface TeamDAO {
-    /**
-     * this function have to be used in both ways, to add or remove a favorite team
-     */
-    fun setFavorite(teamId: String, userId: String, add: Boolean): Flow<Boolean>
+
     /**
      * returns the teams of which the user is a member or null if it is not a member of any team
      */

@@ -18,5 +18,9 @@ interface UserDAO {
     fun getUserLikeNicknameWithUpdate(nickname: String): Flow<Pair<ChangeType, User>?>
 
     fun updateUser(oldUser: User, newUser: User): Flow<Boolean>
+    /**
+     * this function have to be used in both ways, to add or remove a favorite team
+     */
+    fun setFavoriteTeam(teamId: String, userId: String, add: Boolean): Flow<Boolean>
     //TODO aggiungere funzioni per kpi
 }
