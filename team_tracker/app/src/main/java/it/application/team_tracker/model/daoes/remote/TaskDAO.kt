@@ -80,5 +80,10 @@ interface TaskDAO {
      * returns a pair of change type linked to the history of the task or null if no update have been done
      */
     fun getTaskHistoryWithUpdate(taskId: String): Flow<Pair<ChangeType, History>?>
-    //TODO aggiungere funzioni per i tag
+
+    fun getTaskTags(taskId: String): Flow<String?>
+
+    fun getTaskTagsWithUpdate(taskId: String): Flow<Pair<ChangeType, String>?>
+
+    fun addTaskTag(taskId: String, tag: String): Flow<String?>
 }

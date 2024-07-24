@@ -20,5 +20,6 @@ data class Task(
     val membersAndRole: Map<String, String>,
     /** It contains all the ids of he members */
     val members: List<String>,
+    /** ids of tags */
     val tags: List<String>
 ): Entity

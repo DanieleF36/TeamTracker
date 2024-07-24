@@ -4,5 +4,5 @@ data class Tag(
     override val id: String,
     val name: String,
     /** idTask */
-    val tags: List<String>
+    val tasksId: List<String>
 ): Entity

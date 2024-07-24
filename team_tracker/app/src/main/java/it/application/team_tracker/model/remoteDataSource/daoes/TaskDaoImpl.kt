@@ -13,6 +13,7 @@ import it.application.team_tracker.model.entities.Comment
 import it.application.team_tracker.model.entities.History
 import it.application.team_tracker.model.entities.Task
 import it.application.team_tracker.model.remoteDataSource.DownloadService
+import it.application.team_tracker.model.remoteDataSource.entities.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
@@ -194,6 +195,25 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
             else
                 null
         }
+    }
+
+    override fun getTaskTags(taskId: String): Flow<String?> {
+        val query = db.collection("/tags").whereArrayContains("tasksId", taskId)
+        return getCollection<Tag>(query).map { it?.name }
+    }
+
+    override fun getTaskTagsWithUpdate(taskId: String): Flow<Pair<ChangeType, String>?> {
+        val query = db.collection("/tags").whereArrayContains("tasksId", taskId)
+        return getCollectionWithUpdate<Tag>(query).map {
+            if( it != null)
+                Pair(it.first, it.second.name)
+            else
+                null
+        }
+    }
+
+    override fun addTaskTag(taskId: String, tag: String): Flow<String?> {
+        return addDocument("/tags", Tag("id", tag, listOf(taskId)))
     }
 
     private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.entities.Task): Task{
