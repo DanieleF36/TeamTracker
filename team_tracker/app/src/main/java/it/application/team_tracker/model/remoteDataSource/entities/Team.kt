@@ -13,10 +13,11 @@ data class Team (
     val creationDate: Timestamp,
     val deliveryDate: Timestamp?,
     /** Map<idUser, role> */
-    val teamMembers: List<Map<String, String>>,
+    val membersAndRole: Map<String, String>,
+    val members: List<String>,
     /**
        Map<comment || evaluation || userId, String>
-       this map will have always 3 element: comment, evaluation, teamId
+       this map will have always 3 element: comment, evaluation, userId
      */
     val feedbacks: List<Map<String, String>>
 ):Entity
