@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserModel {
     fun getLoggedUser(): State<User?>
+    fun updateLoggedUser(new: User): Flow<Boolean>
     fun getUserLikeNickname(nick: String): Flow<User?>
     fun getUser(id: String): Flow<User?>
-    suspend fun addUser(user: User)
+    fun setFavoriteTeam(teamId: String, userId: String, add: Boolean): Flow<Boolean>
 }
