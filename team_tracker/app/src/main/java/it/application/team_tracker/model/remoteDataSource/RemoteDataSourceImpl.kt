@@ -1,29 +1,23 @@
 package it.application.team_tracker.model.remoteDataSource
 
 import it.application.team_tracker.model.RemoteDataSource
-import it.application.team_tracker.model.daoes.remote.AttachmentDAO
-import it.application.team_tracker.model.daoes.remote.HistoryDAO
-import it.application.team_tracker.model.daoes.remote.KpiDAO
-import it.application.team_tracker.model.daoes.remote.MessageDAO
-import it.application.team_tracker.model.daoes.remote.TagDAO
-import it.application.team_tracker.model.daoes.remote.TaskDAO
-import it.application.team_tracker.model.daoes.remote.TeamDAO
-import it.application.team_tracker.model.daoes.remote.UserDAO
+import it.application.team_tracker.model.daoes.remote.*
+import it.application.team_tracker.model.remoteDataSource.firebase.daoes.*
 
 class RemoteDataSourceImpl: RemoteDataSource {
     override fun messageDao(): MessageDAO {
-        TODO("Not yet implemented")
+        return MessageDaoImpl()
     }
 
     override fun taskDao(): TaskDAO {
-        TODO("Not yet implemented")
+        return TaskDaoImpl()
     }
 
     override fun teamDao(): TeamDAO {
-        TODO("Not yet implemented")
+        return TeamDaoImpl()
     }
 
     override fun userDao(): UserDAO {
-        TODO("Not yet implemented")
+        return UserDaoImpl()
     }
 }
