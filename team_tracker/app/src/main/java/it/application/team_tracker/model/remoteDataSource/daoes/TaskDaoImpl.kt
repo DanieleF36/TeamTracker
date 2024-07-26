@@ -158,6 +158,8 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun downloadAttachment(context: Context, uri: Uri) {
         val intent = Intent(context, DownloadService::class.java)
+        intent.putExtra("uri", uri.toString())
+        intent.putExtra("name", uri.lastPathSegment)
         startForegroundService(context, intent)
     }
 

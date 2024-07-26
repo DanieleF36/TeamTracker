@@ -9,10 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.google.firebase.storage.FirebaseStorage
 import it.application.team_tracker.MainActivity
+import java.io.File
 
 //TODO da testare
-class DownloadService(val name: String, val download: () -> Unit): Service() {
+class DownloadService: Service() {
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -37,7 +39,7 @@ class DownloadService(val name: String, val download: () -> Unit): Service() {
         createNotificationChannel()
         val notification: Notification = NotificationCompat.Builder(this, "DownloadServiceChannel")
             .setContentTitle("Team Tracker")
-            .setContentText("Downloading $name")
+            .setContentText("Downloading")
             //.setSmallIcon(R.drawable.ic_download) // TODO Replace with your app's notification icon
             .setContentIntent(getPendingIntent())
             .build()
@@ -47,7 +49,14 @@ class DownloadService(val name: String, val download: () -> Unit): Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Thread {
-            download()
+            val filePath = intent.getStringExtra("uri")!!
+            val storageRef = FirebaseStorage.getInstance().reference.child(filePath)
+
+            val localFile = File(getExternalFilesDir(null), intent.getStringExtra("name")!!)
+
+            storageRef.getFile(localFile).addOnSuccessListener{
+                Result.success(Unit)
+            }
         }
         return START_NOT_STICKY
     }
