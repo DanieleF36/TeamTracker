@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.daoes
+package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 
 import android.content.Context
 import android.content.Intent
@@ -12,16 +12,16 @@ import it.application.team_tracker.model.entities.Attachment
 import it.application.team_tracker.model.entities.Comment
 import it.application.team_tracker.model.entities.History
 import it.application.team_tracker.model.entities.Task
-import it.application.team_tracker.model.remoteDataSource.DownloadService
-import it.application.team_tracker.model.remoteDataSource.entities.Tag
+import it.application.team_tracker.model.remoteDataSource.firebase.DownloadService
+import it.application.team_tracker.model.remoteDataSource.firebase.entities.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
 
-class TaskDaoImpl:FirebaseDAO(), TaskDAO {
+class TaskDaoImpl: FirebaseDAO(), TaskDAO {
     override fun getTask(taskId: String): Flow<Task?> {
-        return getDocument<it.application.team_tracker.model.remoteDataSource.entities.Task>("/tasks/$taskId").map {
+        return getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.Task>("/tasks/$taskId").map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -30,7 +30,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
     }
 
     override fun getTaskWithUpdate(taskId: String): Flow<Pair<ChangeType, Task>?> {
-        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Task>("/tasks/$taskId").map {
+        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Task>("/tasks/$taskId").map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -40,7 +40,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getUserTasks(userId: String): Flow<Task?> {
         val query = db.collection("/tasks").whereArrayContains("members", userId)
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Task>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Task>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -50,7 +50,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getUserTasksWithUpdate(userId: String): Flow<Pair<ChangeType, Task>?> {
         val query = db.collection("/taks").whereArrayContains("members", userId)
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Task>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Task>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -60,7 +60,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getTeamTasks(teamId: String): Flow<Task?> {
         val query = db.collection("/tasks").whereEqualTo("teamId", teamId)
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Task>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Task>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -70,7 +70,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getTeamTasksWithUpdate(teamId: String): Flow<Pair<ChangeType, Task>?> {
         val query = db.collection("/tasks").whereEqualTo("teamId", teamId)
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Task>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Task>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -114,7 +114,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getComments(taskId: String): Flow<Comment?> {
         val query = db.collection("/comments").whereEqualTo("taskId", taskId)
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Comment>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Comment>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -124,7 +124,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getCommentsWithUpdate(taskId: String): Flow<Pair<ChangeType, Comment>?> {
         val query = db.collection("/comments").whereEqualTo("taskId", taskId)
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Comment>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Comment>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -138,7 +138,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getTaskAttachments(taskId: String): Flow<Attachment?> {
         val query = db.collection("/attachments").whereEqualTo("taskId", taskId)
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Attachment>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Attachment>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -148,7 +148,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getTaskAttachmentsWithUpdate(taskId: String): Flow<Pair<ChangeType, Attachment>?> {
         val query = db.collection("/attachments").whereEqualTo("taskId", taskId)
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Attachment>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Attachment>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -181,7 +181,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getTaskHistory(taskId: String): Flow<History?> {
         val query = db.collection("/histories").whereEqualTo("taskId", taskId)
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.History>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.History>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -191,7 +191,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
 
     override fun getTaskHistoryWithUpdate(taskId: String): Flow<Pair<ChangeType, History>?> {
         val query = db.collection("/histories").whereEqualTo("taskId", taskId)
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.History>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.History>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -218,7 +218,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         return addDocument("/tags", Tag("id", tag, listOf(taskId)))
     }
 
-    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.entities.Task): Task{
+    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.firebase.entities.Task): Task{
         return Task(
             t.id,
             t.name,
@@ -237,8 +237,8 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         )
     }
 
-    private fun fromNeutralToRemote(t: Task): it.application.team_tracker.model.remoteDataSource.entities.Task{
-        return it.application.team_tracker.model.remoteDataSource.entities.Task(
+    private fun fromNeutralToRemote(t: Task): it.application.team_tracker.model.remoteDataSource.firebase.entities.Task {
+        return it.application.team_tracker.model.remoteDataSource.firebase.entities.Task(
             t.id,
             t.name,
             t.description,
@@ -257,7 +257,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         )
     }
 
-    private fun fromRemoteToNeutral(c: it.application.team_tracker.model.remoteDataSource.entities.Comment): Comment{
+    private fun fromRemoteToNeutral(c: it.application.team_tracker.model.remoteDataSource.firebase.entities.Comment): Comment{
         return Comment(
             c.id,
             c.message,
@@ -267,8 +267,8 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         )
     }
 
-    private fun fromNeutralToRemote(c: Comment): it.application.team_tracker.model.remoteDataSource.entities.Comment{
-        return it.application.team_tracker.model.remoteDataSource.entities.Comment(
+    private fun fromNeutralToRemote(c: Comment): it.application.team_tracker.model.remoteDataSource.firebase.entities.Comment {
+        return it.application.team_tracker.model.remoteDataSource.firebase.entities.Comment(
             c.id,
             c.message,
             Timestamp(c.date.time),
@@ -277,7 +277,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         )
     }
 
-    private fun fromRemoteToNeutral(a: it.application.team_tracker.model.remoteDataSource.entities.Attachment): Attachment{
+    private fun fromRemoteToNeutral(a: it.application.team_tracker.model.remoteDataSource.firebase.entities.Attachment): Attachment{
         return Attachment(
             a.id,
             Uri.parse(a.url),
@@ -288,8 +288,8 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         )
     }
 
-    private fun fromNeutralToRemote(a: Attachment): it.application.team_tracker.model.remoteDataSource.entities.Attachment{
-        return it.application.team_tracker.model.remoteDataSource.entities.Attachment(
+    private fun fromNeutralToRemote(a: Attachment): it.application.team_tracker.model.remoteDataSource.firebase.entities.Attachment {
+        return it.application.team_tracker.model.remoteDataSource.firebase.entities.Attachment(
             a.id,
             a.url.toString(),
             a.creator,
@@ -299,7 +299,7 @@ class TaskDaoImpl:FirebaseDAO(), TaskDAO {
         )
     }
 
-    private fun fromRemoteToNeutral(h: it.application.team_tracker.model.remoteDataSource.entities.History): History{
+    private fun fromRemoteToNeutral(h: it.application.team_tracker.model.remoteDataSource.firebase.entities.History): History{
         return History(
             h.id,
             h.type,

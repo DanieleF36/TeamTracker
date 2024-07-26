@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.entities
+package it.application.team_tracker.model.remoteDataSource.firebase.entities
 
 import com.google.firebase.Timestamp
 
@@ -20,4 +20,4 @@ data class Team (
        this map will have always 3 element: comment, evaluation, userId
      */
     val feedbacks: List<Map<String, String>>
-):Entity
+): Entity

@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.entities
+package it.application.team_tracker.model.remoteDataSource.firebase.entities
 
 import com.google.firebase.firestore.PropertyName
 
@@ -25,4 +25,4 @@ data class User(
     val taskMembers: Map<String, String>,
     @get:PropertyName("favorite_team")
     val favoriteTeam: List<String>
-):Entity
+): Entity

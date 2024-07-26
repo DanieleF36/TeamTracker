@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource
+package it.application.team_tracker.model.remoteDataSource.firebase
 
 import android.app.Notification
 import android.app.NotificationChannel

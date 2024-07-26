@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.daoes
+package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 
 import android.net.Uri
 import com.google.firebase.Timestamp
@@ -15,7 +15,7 @@ import java.util.Calendar
 
 class UserDaoImpl: FirebaseDAO(), UserDAO {
     override fun getUser(userId: String): Flow<User?> {
-        return getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").map {
+        return getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -24,7 +24,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getUserWithUpdate(userId: String): Flow<Pair<ChangeType, User>?>{
-        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").map {
+        return getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").map {
             if(it != null)
                 Pair(it.first,fromRemoteToNeutral(it.second))
             else
@@ -33,7 +33,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getUserLikeNickname(nickname: String): Flow<User?> {
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("/users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>(db.collection("/users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
             it?.nickname?.contains(nickname) ?: false
         }.map {
             if(it != null)
@@ -44,7 +44,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getUserLikeNicknameWithUpdate(nickname: String): Flow<Pair<ChangeType, User>?> {
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.User>(db.collection("/users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>(db.collection("/users").whereGreaterThanOrEqualTo("nickname", nickname)).filter {
             it?.second?.nickname?.contains(nickname) ?: false
         }.map {
             if(it != null)
@@ -72,10 +72,10 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
             else
                 null
         }*/
-        getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").collect{ user ->
+        getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").collect{ user ->
             if(user != null) {
                 val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
-                getCollection<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
+                getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Team>(query).map {
                     if(it != null)
                         trySend(fromRemoteToNeutral(it))
                     else
@@ -96,10 +96,10 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
             else
                 null
         }*/
-        getDocument<it.application.team_tracker.model.remoteDataSource.entities.User>("/users/$userId").collect{ user ->
+        getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").collect{ user ->
             if(user != null) {
                 val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
-                getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
+                getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Team>(query).map {
                     if(it != null)
                         trySend(Pair(it.first, fromRemoteToNeutral(it.second)))
                     else
@@ -112,7 +112,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
         }
     }
 
-    private fun fromRemoteToNeutral(u: it.application.team_tracker.model.remoteDataSource.entities.User): User{
+    private fun fromRemoteToNeutral(u: it.application.team_tracker.model.remoteDataSource.firebase.entities.User): User{
         return User(
             u.id,
             u.nickname,
@@ -128,8 +128,8 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
         )
     }
 
-    private fun fromNeutralToRemote(t: Team): it.application.team_tracker.model.remoteDataSource.entities.Team{
-        return it.application.team_tracker.model.remoteDataSource.entities.Team(
+    private fun fromNeutralToRemote(t: Team): it.application.team_tracker.model.remoteDataSource.firebase.entities.Team {
+        return it.application.team_tracker.model.remoteDataSource.firebase.entities.Team(
             t.id,
             t.name,
             t.description,
@@ -137,16 +137,20 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
             t.photo.toString(),
             t.creator,
             Timestamp(t.creationDate.time),
-            if(t.deliveryDate != null) Timestamp(t.deliveryDate.time) else null,
+            if (t.deliveryDate != null) Timestamp(t.deliveryDate.time) else null,
             t.teamMembers,
             t.teamMembers.keys.toList(),
             t.feedbacks.map {
-                mapOf("comment" to it.comment, "evaluation" to it.evaluation.toString(), "userId" to it.userId)
+                mapOf(
+                    "comment" to it.comment,
+                    "evaluation" to it.evaluation.toString(),
+                    "userId" to it.userId
+                )
             }
         )
     }
 
-    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.entities.Team): Team{
+    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.firebase.entities.Team): Team{
         return Team(
             t.id,
             t.name,

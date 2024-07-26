@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.daoes
+package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 
 import android.net.Uri
 import com.google.firebase.Firebase
@@ -7,7 +7,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import it.application.team_tracker.model.daoes.remote.ChangeType
-import it.application.team_tracker.model.remoteDataSource.entities.Entity
+import it.application.team_tracker.model.remoteDataSource.firebase.entities.Entity
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

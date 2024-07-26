@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name="it.application.team_tracker.model.remoteDataSource.DownloadService"
+            android:name="it.application.team_tracker.model.remoteDataSource.firebase.DownloadService"
             android:foregroundServiceType="dataSync"
             android:exported="false"/>
     </application>

@@ -1,9 +1,8 @@
-package it.application.team_tracker.model.remoteDataSource.daoes
+package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 
 import android.net.Uri
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
-import it.application.team_tracker.model.daoes.remote.ChangeType
 import it.application.team_tracker.model.daoes.remote.TeamDAO
 import it.application.team_tracker.model.entities.Feedback
 import it.application.team_tracker.model.entities.Team
@@ -59,8 +58,8 @@ class TeamDaoImpl: FirebaseDAO(), TeamDAO {
         return addDocument("/teams", fromNeutralToRemote(team))
     }
 
-    private fun fromNeutralToRemote(t: Team): it.application.team_tracker.model.remoteDataSource.entities.Team{
-        return it.application.team_tracker.model.remoteDataSource.entities.Team(
+    private fun fromNeutralToRemote(t: Team): it.application.team_tracker.model.remoteDataSource.firebase.entities.Team {
+        return it.application.team_tracker.model.remoteDataSource.firebase.entities.Team(
             t.id,
             t.name,
             t.description,
@@ -68,16 +67,20 @@ class TeamDaoImpl: FirebaseDAO(), TeamDAO {
             t.photo.toString(),
             t.creator,
             Timestamp(t.creationDate.time),
-            if(t.deliveryDate != null)Timestamp(t.deliveryDate.time) else null,
+            if (t.deliveryDate != null) Timestamp(t.deliveryDate.time) else null,
             t.teamMembers,
             t.teamMembers.keys.toList(),
             t.feedbacks.map {
-                mapOf("comment" to it.comment, "evaluation" to it.evaluation.toString(), "userId" to it.userId)
+                mapOf(
+                    "comment" to it.comment,
+                    "evaluation" to it.evaluation.toString(),
+                    "userId" to it.userId
+                )
             }
         )
     }
 
-    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.entities.Team): Team{
+    private fun fromRemoteToNeutral(t: it.application.team_tracker.model.remoteDataSource.firebase.entities.Team): Team{
         return Team(
             t.id,
             t.name,

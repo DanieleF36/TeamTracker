@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.entities
+package it.application.team_tracker.model.remoteDataSource.firebase.entities
 
 import com.google.firebase.Timestamp
 

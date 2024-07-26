@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.remoteDataSource.daoes
+package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -16,13 +16,13 @@ import java.util.Calendar
 import java.util.Date
 
 class MessageDaoImpl: FirebaseDAO(), MessageDAO {
-    private fun getMessage(teamId: String? = null, receiverId: String? = null, userId: String, messageId: String? = null, onMessage: (it.application.team_tracker.model.remoteDataSource.entities.Message?)->Unit){
+    private fun getMessage(teamId: String? = null, receiverId: String? = null, userId: String, messageId: String? = null, onMessage: (it.application.team_tracker.model.remoteDataSource.firebase.entities.Message?)->Unit){
         if((teamId != null && receiverId != null && messageId != null) || (teamId == null && receiverId == null && messageId == null))
             throw IllegalArgumentException("One between teamId, receiverId and messageId has to be not null meanwhile the others have to be null")
         if(teamId != null) {
             val query =  db.collection("/messages").whereEqualTo("teamId", teamId).whereArrayContains("isLastRead", userId)
             query.get().addOnSuccessListener { mes ->
-                onMessage(mes.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java))
+                onMessage(mes.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java))
             }.addOnFailureListener {
                 TODO()
             }
@@ -31,14 +31,14 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         if(receiverId != null) {
             val query = db.collection("/messages").whereEqualTo("receiver", receiverId).whereArrayContains("isLastRead", userId)
             query.get().addOnSuccessListener { mes ->
-                onMessage(mes.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java))
+                onMessage(mes.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java))
             }.addOnFailureListener {
                 TODO()
             }
             //return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Message>(query)
         }
         db.document("/messages/$messageId").get().addOnSuccessListener { mes ->
-            onMessage(mes.toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java))
+            onMessage(mes.toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java))
         }.addOnFailureListener {
             TODO()
         }
@@ -50,7 +50,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         calendar.time = Date()
         calendar.add(Calendar.MONTH, -monthBehind)
         val query = db.collection("/messages").whereEqualTo("receiver", null).whereEqualTo("teamId", teamId).whereGreaterThanOrEqualTo("date", Timestamp(date = calendar.time))
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Message>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Message>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -63,7 +63,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         calendar.time = Date()
         calendar.add(Calendar.MONTH, -monthBehind)
         val query = db.collection("/messages").whereEqualTo("receiver", null).whereEqualTo("teamId", teamId).whereGreaterThanOrEqualTo("date", Timestamp(date = calendar.time))
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Message>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Message>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -76,7 +76,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         calendar.time = Date()
         calendar.add(Calendar.MONTH, -monthBehind)
         val query = db.collection("/messages").whereEqualTo("receiver", userId).whereEqualTo("teamId", null).whereGreaterThanOrEqualTo("date", Timestamp(date = calendar.time))
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Message>(query).map {
+        return getCollection<it.application.team_tracker.model.remoteDataSource.firebase.entities.Message>(query).map {
             if(it != null)
                 fromRemoteToNeutral(it)
             else
@@ -89,7 +89,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         calendar.time = Date()
         calendar.add(Calendar.MONTH, -monthBehind)
         val query = db.collection("/messages").whereEqualTo("receiver", userId).whereEqualTo("teamId", null).whereGreaterThanOrEqualTo("date", Timestamp(date = calendar.time))
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Message>(query).map {
+        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Message>(query).map {
             if(it != null)
                 Pair(it.first, fromRemoteToNeutral(it.second))
             else
@@ -139,7 +139,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
             if (snap == null)
                 trySend(0)
             else {
-                val message = snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java)
+                val message = snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java)
                 val query2 = db.collection("/messages").orderBy("date", Query.Direction.ASCENDING).startAt(message!!.date)
                 query2.get().addOnSuccessListener {
                     trySend(it.size()-1)
@@ -161,7 +161,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
                     trySend(0)
                 else {
                     val message =
-                        snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java)
+                        snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java)
                     val query2 =
                         db.collection("/messages").orderBy("date", Query.Direction.ASCENDING)
                             .startAt(message!!.date)
@@ -182,7 +182,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
             if (snap == null)
                 trySend(0)
             else {
-                val message = snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java)
+                val message = snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java)
                 val query2 = db.collection("/messages").orderBy("date", Query.Direction.ASCENDING).startAt(message!!.date)
                 query2.get().addOnSuccessListener {
                     trySend(it.size()-1)
@@ -203,7 +203,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
                     trySend(0)
                 else {
                     val message =
-                        snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.entities.Message::class.java)
+                        snap.documents[0].toObject(it.application.team_tracker.model.remoteDataSource.firebase.entities.Message::class.java)
                     val query2 =
                         db.collection("/messages").orderBy("date", Query.Direction.ASCENDING)
                             .startAt(message!!.date)
@@ -218,7 +218,7 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         awaitClose { listener.remove() }
     }
 
-    private fun fromRemoteToNeutral(m: it.application.team_tracker.model.remoteDataSource.entities.Message): Message{
+    private fun fromRemoteToNeutral(m: it.application.team_tracker.model.remoteDataSource.firebase.entities.Message): Message{
         return Message(
             m.id,
             m.message,
@@ -232,15 +232,15 @@ class MessageDaoImpl: FirebaseDAO(), MessageDAO {
         )
     }
 
-    private fun fromNeutralToRemote(m: Message): it.application.team_tracker.model.remoteDataSource.entities.Message{
-        return it.application.team_tracker.model.remoteDataSource.entities.Message(
+    private fun fromNeutralToRemote(m: Message): it.application.team_tracker.model.remoteDataSource.firebase.entities.Message {
+        return it.application.team_tracker.model.remoteDataSource.firebase.entities.Message(
             m.id,
             m.message,
             Timestamp(m.date.time),
             m.teamId,
             m.sender,
             m.receiver,
-            if(Firebase.auth.currentUser != null)listOf(Firebase.auth.currentUser!!.uid) else emptyList()
+            if (Firebase.auth.currentUser != null) listOf(Firebase.auth.currentUser!!.uid) else emptyList()
         )
     }
 }
