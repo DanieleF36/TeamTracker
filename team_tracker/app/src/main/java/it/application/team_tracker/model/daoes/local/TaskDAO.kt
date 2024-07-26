@@ -26,6 +26,8 @@ interface TaskDAO {
 
     fun updateTask(taskId: String): Flow<Boolean>
 
+    fun removeTask(taskId: String): Flow<Boolean>
+
     fun removeUser(taskId: String, userId: String): Flow<Boolean>
 
     fun updateUserRole(userId: String, newRole: String): Flow<Boolean>
@@ -52,7 +54,7 @@ interface TaskDAO {
     /**
      * returns a specific attachment to or null if it does not exist
      */
-    fun getAttachment(idAttachment: String): Flow<Attachment?>
+    fun downloadAttachment(idAttachment: String): Flow<Attachment?>
     /**
      * add a new attachment and return its id
      */
@@ -61,4 +63,8 @@ interface TaskDAO {
      * add new attachments and return their ids
      */
     fun addAttachments(vararg attachment: Attachment): Flow<String>
+
+    fun getTaskTags(taskId: String): Flow<String?>
+
+    fun addTaskTag(taskId: String, tag: String): Flow<String?>
 }
