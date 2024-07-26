@@ -7,11 +7,18 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import it.application.team_tracker.model.LocalDataSource
+import it.application.team_tracker.model.RemoteDataSource
+import it.application.team_tracker.model.UserModel
+import it.application.team_tracker.model.localDataSource.LocalDataSourceImpl
 import it.application.team_tracker.model.localDataSource.room.dao.AttachmentDAO
 import it.application.team_tracker.model.localDataSource.room.dao.CommentDAO
 import it.application.team_tracker.model.localDataSource.room.dao.HistoryDAO
 import it.application.team_tracker.model.localDataSource.room.dao.UserDAO
 import it.application.team_tracker.model.localDataSource.room.database.ApplicationDB
+import it.application.team_tracker.model.remoteDataSource.RemoteDataSourceImpl
+import it.application.team_tracker.model.userModel.UserModelImpl
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -40,5 +47,20 @@ object DatabaseModule{
     @Provides
     fun provideHistoryDAO(database: ApplicationDB): HistoryDAO {
         return database.historyDao()
+    }
+    @Provides
+    @Singleton
+    fun provideLocalDataSource(): LocalDataSource{
+        return LocalDataSourceImpl()
+    }
+    @Provides
+    @Singleton
+    fun provideRemoteDataSource(): RemoteDataSource{
+        return RemoteDataSourceImpl()
+    }
+    @Provides
+    @Singleton
+    fun provideUserModel(): UserModel{
+        return UserModelImpl()
     }
 }
