@@ -12,7 +12,7 @@ interface UserDAO {
 
     fun getUserLikeNickname(nickname: String): Flow<User?>
 
-    fun updateUser(user: User): Flow<Boolean>
+    fun updateUser(old: User, new: User): Flow<Boolean>
     /**
      * add a user and return its id
      */
