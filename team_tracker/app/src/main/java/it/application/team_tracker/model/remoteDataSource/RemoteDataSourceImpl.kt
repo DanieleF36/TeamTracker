@@ -3,8 +3,9 @@ package it.application.team_tracker.model.remoteDataSource
 import it.application.team_tracker.model.RemoteDataSource
 import it.application.team_tracker.model.daoes.remote.*
 import it.application.team_tracker.model.remoteDataSource.firebase.daoes.*
+import javax.inject.Inject
 
-class RemoteDataSourceImpl: RemoteDataSource {
+class RemoteDataSourceImpl @Inject constructor(): RemoteDataSource {
     override fun messageDao(): MessageDAO {
         return MessageDaoImpl()
     }

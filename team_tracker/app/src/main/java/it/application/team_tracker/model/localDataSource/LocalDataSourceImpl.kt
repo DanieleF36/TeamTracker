@@ -2,8 +2,9 @@ package it.application.team_tracker.model.localDataSource
 
 import it.application.team_tracker.model.LocalDataSource
 import it.application.team_tracker.model.daoes.local.*
+import javax.inject.Inject
 
-class LocalDataSourceImpl: LocalDataSource {
+class LocalDataSourceImpl @Inject constructor(): LocalDataSource {
     /*override fun attachmentDao(): AttachmentDAO {
         return object : AttachmentDAO {
             @Inject
