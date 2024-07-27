@@ -1,10 +1,19 @@
 package it.application.team_tracker.model.daoes.remote
 
+import android.content.Context
 import it.application.team_tracker.model.entities.Team
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserDAO {
+    //TODO gestire parametri per il login
+    fun login(): Flow<String?>
+    /**
+     * this function may need the context for drawing google credential manager
+     * returns the id if the login gone well
+     * throw IllegalStateException with Internal error or No account available for the login
+     */
+    fun loginGoogle(context: Context?): Flow<String?>
     /**
      * return the user if it exists or null otherwise
      */
