@@ -1,19 +1,83 @@
 package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 
+import android.content.Context
 import android.net.Uri
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.auth
 import it.application.team_tracker.model.daoes.remote.ChangeType
 import it.application.team_tracker.model.daoes.remote.UserDAO
 import it.application.team_tracker.model.entities.Feedback
 import it.application.team_tracker.model.entities.Team
 import it.application.team_tracker.model.entities.User
+import it.application.team_tracker.model.exception.NoAccountAvailableException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 
 class UserDaoImpl: FirebaseDAO(), UserDAO {
+    override fun login(): Flow<String?> {
+        TODO("Not yet implemented")
+    }
+
+    override fun loginGoogle(context: Context?): Flow<String?> = flow {
+        if(context == null)
+            throw IllegalArgumentException("Here google credential manager is used so context is needed")
+        val auth = Firebase.auth
+
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(true)
+            .setServerClientId("TODO WEB_CLIENT_ID")
+            .setAutoSelectEnabled(true)
+            .setNonce(randomString(32))
+        .build()
+
+        val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption)
+
+        CoroutineScope(Dispatchers.IO).launch{
+            val credentialManager = CredentialManager.create(context)
+            try {
+                val result = credentialManager.getCredential(request = request.build(),context = context)
+                when(val credential = result.credential){
+                    is CustomCredential -> {
+                        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                        val idToken = googleIdTokenCredential.idToken
+                        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+                        val user = auth.signInWithCredential(firebaseCredential).await().user
+                        if(user != null)
+                            emit(user.uid)
+                        else
+                            emit(null)
+
+                    }
+                    else -> {
+                        throw IllegalStateException("Internal error")
+                    }
+                }
+            } catch (e: GetCredentialException) {
+                if(e.type == android.credentials.GetCredentialException.TYPE_INTERRUPTED)
+                    throw IllegalStateException("User has interrupted login action")
+                if(e.type == android.credentials.GetCredentialException.TYPE_NO_CREDENTIAL)
+                    throw NoAccountAvailableException("No account available for the login")
+                throw e
+            }
+        }
+    }
+
     override fun getUser(userId: String): Flow<User?> {
         return getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").map {
             if(it != null)
