@@ -1,6 +1,7 @@
 package it.application.team_tracker.model.daoes.remote
 
 import android.content.Context
+import android.net.Uri
 import it.application.team_tracker.model.entities.Team
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,10 @@ interface UserDAO {
     fun getUserLikeNicknameWithUpdate(nickname: String): Flow<Pair<ChangeType, User>?>
 
     fun updateUser(oldUser: User, newUser: User): Flow<Boolean>
+
+    fun changePhoto(uri: Uri, userId: String): Flow<String?>
+
+    fun deletePhoto(userId: String): Flow<Boolean>
     /**
      * this function have to be used in both ways, to add or remove a favorite team
      */

@@ -1,5 +1,6 @@
 package it.application.team_tracker.model.daoes.local
 
+import android.net.Uri
 import it.application.team_tracker.model.entities.Team
 import it.application.team_tracker.model.entities.User
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +14,11 @@ interface UserDAO {
     fun getUserLikeNickname(nickname: String): Flow<User?>
 
     fun updateUser(old: User, new: User): Flow<Boolean>
+
+    fun changePhoto(uri: Uri, userId: String): Flow<String?>
+
+    fun deletePhoto(userId: String): Flow<Boolean>
+
     /**
      * add a user and return its id
      */
