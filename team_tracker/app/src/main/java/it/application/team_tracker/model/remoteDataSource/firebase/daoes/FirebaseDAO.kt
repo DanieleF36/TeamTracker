@@ -143,6 +143,33 @@ abstract class FirebaseDAO {
         }
         return ret.toMap()
     }
+    /**
+     * this will upload the photo present at localUri and save it on the storage in /users/$id/profilePicture or /teams/$id/profilePicture based on user value
+     * and returns the path where it's saved
+     */
+    protected fun uploadPhoto(localUri: Uri, user: Boolean, id: String): Flow<String?> = callbackFlow {
+        val path = if(user) "/users/$id/profilePicture" else "/teams/$id/profilePicture"
+        val ref = storage.child(path)
+        ref.putFile(localUri).addOnSuccessListener {
+            trySend(path)
+        }.addOnFailureListener { e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
+            trySend(null)
+        }
+    }
+
+    protected fun deletePhoto(user: Boolean, id: String): Flow<Boolean> = callbackFlow {
+        val path = if(user) "/users/$id/profilePicture" else "/teams/$id/profilePicture"
+        val ref = storage.child(path)
+        ref.delete().addOnSuccessListener {
+            trySend(true)
+        }.addOnFailureListener {e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
+            trySend(false)
+        }
+    }
 
     protected fun deleteDocument(documentPath: String): Flow<Boolean> = callbackFlow {
         db.document(documentPath).delete().addOnSuccessListener {
