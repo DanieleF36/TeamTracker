@@ -119,7 +119,18 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun updateUser(oldUser: User, newUser: User): Flow<Boolean> {
+        if(oldUser.photo != newUser.photo){
+            throw IllegalStateException("To change the photo you should call changePhoto")
+        }
         return updateDocument("/users/${newUser.id}", oldUser, newUser)
+    }
+
+    override fun changePhoto(uri: Uri, userId: String): Flow<String?> {
+        return uploadPhoto(uri, true, userId)
+    }
+
+    override fun deletePhoto(userId: String): Flow<Boolean> {
+        return super.deletePhoto(true, userId)
     }
 
     override fun setFavoriteTeam(teamId: String, userId: String, add: Boolean): Flow<Boolean> {
@@ -129,13 +140,6 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getTeams(userId: String): Flow<Team?> = callbackFlow {
-        /*val query = db.collection("/teams").whereArrayContains("members", userId)
-        return getCollection<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
-            if(it != null)
-                fromRemoteToNeutral(it)
-            else
-                null
-        }*/
         getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").collect{ user ->
             if(user != null) {
                 val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
@@ -147,19 +151,12 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
                 }
             }
             else{
-                TODO("err")
+                throw IllegalArgumentException("user is not available")
             }
         }
     }
 
     override fun getTeamsWithUpdate(userId: String): Flow<Pair<ChangeType, Team>?> = callbackFlow{
-        /*val query = db.collection("/teams").whereArrayContains("members", userId)
-        return getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.entities.Team>(query).map {
-            if(it != null)
-                Pair(it.first, fromRemoteToNeutral(it.second))
-            else
-                null
-        }*/
         getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").collect{ user ->
             if(user != null) {
                 val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
@@ -171,7 +168,7 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
                 }
             }
             else{
-                TODO("err")
+                throw IllegalArgumentException("user is not available")
             }
         }
     }

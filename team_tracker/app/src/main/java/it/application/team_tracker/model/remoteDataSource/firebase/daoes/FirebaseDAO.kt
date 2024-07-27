@@ -3,10 +3,12 @@ package it.application.team_tracker.model.remoteDataSource.firebase.daoes
 import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import it.application.team_tracker.model.daoes.remote.ChangeType
+import it.application.team_tracker.model.exception.InternetUnavailableException
 import it.application.team_tracker.model.remoteDataSource.firebase.entities.Entity
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -27,9 +29,12 @@ abstract class FirebaseDAO {
 
     protected inline fun <reified T> getCollectionWithUpdate(query: Query): Flow<Pair<ChangeType, T>?> = callbackFlow {
         val listener =
-            query.addSnapshotListener{ value, err ->
-                if(err != null) {
-                    TODO()
+            query.addSnapshotListener{ value, e ->
+                if(e != null) {
+                    if(e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                        throw InternetUnavailableException()
+                    else
+                        throw e
                 }else {
                     if(value != null) {
                         value.documentChanges.forEach {
@@ -52,17 +57,21 @@ abstract class FirebaseDAO {
             }
             else
                 trySend(null)
-        }.addOnFailureListener { err->
-            TODO()
-            //throw err
+        }.addOnFailureListener { e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
+            else
+                throw e
         }
     }
 
     protected inline fun <reified T> getDocumentWithUpdate(documentPath: String): Flow<Pair<ChangeType, T>?> = callbackFlow {
-        val listener = db.document(documentPath).addSnapshotListener { value, err ->
-            if(err != null) {
-                TODO()
-                //throw err
+        val listener = db.document(documentPath).addSnapshotListener { value, e ->
+            if(e != null) {
+                if(e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                    throw InternetUnavailableException()
+                else
+                    throw e
             }else{
                 if(value != null) {
                     if(value.exists())
@@ -84,8 +93,11 @@ abstract class FirebaseDAO {
                 trySend(value.toObject(T::class.java))
             else
                 trySend(null)
-        }.addOnFailureListener {
-            TODO()
+        }.addOnFailureListener { e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
+            else
+                throw e
         }
     }
 
@@ -99,11 +111,8 @@ abstract class FirebaseDAO {
     protected fun addDocument(collectionPath: String, obj: Entity): Flow<String?> = callbackFlow {
         db.collection(collectionPath).add(obj).addOnSuccessListener {
             trySend(it.id)
-        }.addOnFailureListener {
-            TODO()
         }
     }
-
     /**
      * Updates an already existing document.
      *
@@ -115,7 +124,9 @@ abstract class FirebaseDAO {
         val newParameters = findDifferences(old, new)
         db.document(documentPath).update(newParameters).addOnSuccessListener {
             trySend(true)
-        }.addOnFailureListener {
+        }.addOnFailureListener { e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
             trySend(false)
         }
     }
@@ -136,7 +147,9 @@ abstract class FirebaseDAO {
     protected fun deleteDocument(documentPath: String): Flow<Boolean> = callbackFlow {
         db.document(documentPath).delete().addOnSuccessListener {
             trySend(true)
-        }.addOnFailureListener {
+        }.addOnFailureListener {e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
             trySend(false)
         }
     }
@@ -152,7 +165,9 @@ abstract class FirebaseDAO {
         val ref = storage.child("attachments/$taskId/${name}_$randomString")
         ref.putFile(uri).addOnSuccessListener {
             trySend("attachments/$taskId/${name}_$randomString")
-        }.addOnFailureListener {
+        }.addOnFailureListener {e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
             trySend(null)
         }
     }
@@ -161,7 +176,9 @@ abstract class FirebaseDAO {
         val ref = storage.child(uri.toString())
         ref.delete().addOnSuccessListener {
             trySend(true)
-        }.addOnFailureListener {
+        }.addOnFailureListener {e->
+            if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
+                throw InternetUnavailableException()
             trySend(false)
         }
     }
