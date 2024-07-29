@@ -5,7 +5,7 @@ import com.google.firebase.firestore.PropertyName
 data class User(
     override var id: String,
     val nickname: String,
-    @get:PropertyName("fullname")
+    @PropertyName("fullname")
     val fullName: String,
     val email: String,
     val location: String,
@@ -13,7 +13,7 @@ data class User(
     val description: String,
     val photo: String?,
     /** Map<idTeam, role> */
-    @get:PropertyName("team_members")
+    @PropertyName("team_members")
     val teamMembers: Map<String, String>,
     /**
        Map<comment || evaluation || teamId, String>
@@ -21,8 +21,8 @@ data class User(
      */
     val feedbacks: Map<String, String>,
     /** Map<idUser, role> */
-    @get:PropertyName("task_members")
+    @PropertyName("task_members")
     val taskMembers: Map<String, String>,
-    @get:PropertyName("favorite_team")
+    @PropertyName("favorite_team")
     val favoriteTeam: List<String>
 ): Entity
