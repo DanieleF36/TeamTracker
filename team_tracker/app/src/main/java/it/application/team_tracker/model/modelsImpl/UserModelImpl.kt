@@ -1,4 +1,4 @@
-package it.application.team_tracker.model.userModel
+package it.application.team_tracker.model.modelsImpl
 
 import android.content.Context
 import android.net.Uri
@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -102,6 +100,10 @@ class UserModelImpl @Inject constructor(): UserModel {
             if(it)
                 local.userDao().updateUser(loggedUser.value!!, new)
         }
+    }
+
+    private fun validateUser(u: User): Boolean{
+        TODO()
     }
 
     override fun getUserLikeNickname(nick: String): Flow<User?> {

@@ -17,8 +17,7 @@ import it.application.team_tracker.model.localDataSource.room.dao.HistoryDAO
 import it.application.team_tracker.model.localDataSource.room.dao.UserDAO
 import it.application.team_tracker.model.localDataSource.room.database.ApplicationDB
 import it.application.team_tracker.model.remoteDataSource.RemoteDataSourceImpl
-import it.application.team_tracker.model.userModel.UserModelImpl
-import javax.inject.Inject
+import it.application.team_tracker.model.modelsImpl.UserModelImpl
 import javax.inject.Singleton
 
 @Module
