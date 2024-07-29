@@ -27,7 +27,7 @@ abstract class FirebaseDAO {
         }
     }
 
-    protected inline fun <reified T> getCollectionWithUpdate(query: Query): Flow<Pair<ChangeType, T>?> = callbackFlow {
+    protected inline fun <reified T: Entity> getCollectionWithUpdate(query: Query): Flow<Pair<ChangeType, T>?> = callbackFlow {
         val listener =
             query.addSnapshotListener{ value, e ->
                 if(e != null) {
@@ -38,7 +38,9 @@ abstract class FirebaseDAO {
                 }else {
                     if(value != null) {
                         value.documentChanges.forEach {
-                            trySend(Pair(toChangeType(it), it.document.toObject(T::class.java)))
+                            val doc = it.document.toObject(T::class.java)
+                            doc.id = it.document.id
+                            trySend(Pair(toChangeType(it), doc))
                         }
                     }
                     else
@@ -48,11 +50,13 @@ abstract class FirebaseDAO {
         awaitClose { listener.remove() }
     }
 
-    protected inline fun <reified T> getCollection(query: Query): Flow<T?> = callbackFlow {
+    protected inline fun <reified T: Entity> getCollection(query: Query): Flow<T?> = callbackFlow {
         query.get().addOnSuccessListener { value->
             if(value != null) {
                 value.documentChanges.forEach {
-                    trySend(it.document.toObject(T::class.java))
+                    val doc = it.document.toObject(T::class.java)
+                    doc.id = it.document.id
+                    trySend(doc)
                 }
             }
             else
@@ -65,7 +69,7 @@ abstract class FirebaseDAO {
         }
     }
 
-    protected inline fun <reified T> getDocumentWithUpdate(documentPath: String): Flow<Pair<ChangeType, T>?> = callbackFlow {
+    protected inline fun <reified T: Entity> getDocumentWithUpdate(documentPath: String): Flow<Pair<ChangeType, T>?> = callbackFlow {
         val listener = db.document(documentPath).addSnapshotListener { value, e ->
             if(e != null) {
                 if(e.code == FirebaseFirestoreException.Code.UNAVAILABLE)
@@ -74,10 +78,16 @@ abstract class FirebaseDAO {
                     throw e
             }else{
                 if(value != null) {
-                    if(value.exists())
-                        trySend(Pair(ChangeType.UPDATE, value.toObject(T::class.java)!!))
-                    else
-                        trySend(Pair(ChangeType.REMOVE, value.toObject(T::class.java)!!))
+                    if(value.exists()) {
+                        val doc = value.toObject(T::class.java)!!
+                        doc.id = value.id
+                        trySend(Pair(ChangeType.UPDATE, doc))
+                    }
+                    else {
+                        val doc = value.toObject(T::class.java)!!
+                        doc.id = value.id
+                        trySend(Pair(ChangeType.REMOVE, doc))
+                    }
                 }
                 else {
                     trySend(null)
@@ -87,10 +97,13 @@ abstract class FirebaseDAO {
         awaitClose { listener.remove() }
     }
 
-    protected inline fun <reified T> getDocument(documentPath: String): Flow<T?> = callbackFlow {
+    protected inline fun <reified T: Entity> getDocument(documentPath: String): Flow<T?> = callbackFlow {
         db.document(documentPath).get().addOnSuccessListener { value ->
-            if(value != null)
-                trySend(value.toObject(T::class.java))
+            if(value != null) {
+                val doc = value.toObject(T::class.java)!!
+                doc.id = value.id
+                trySend(doc)
+            }
             else
                 trySend(null)
         }.addOnFailureListener { e->
@@ -100,7 +113,6 @@ abstract class FirebaseDAO {
                 throw e
         }
     }
-
     /**
      * Creates a new one. If the provided `obj` implements
      *
@@ -109,7 +121,7 @@ abstract class FirebaseDAO {
      *
      */
     protected fun addDocument(collectionPath: String, obj: Entity): Flow<String?> = callbackFlow {
-        db.collection(collectionPath).add(obj).addOnSuccessListener {
+        db.collection(collectionPath).add(obj.toMap()).addOnSuccessListener {
             trySend(it.id)
         }
     }
