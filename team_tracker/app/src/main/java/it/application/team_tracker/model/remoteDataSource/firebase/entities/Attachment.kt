@@ -5,7 +5,7 @@ import com.google.firebase.Timestamp
 
 
 data class Attachment(
-    override val id: String,
+    override var id: String,
     val url: String,
     val creator: String,
     val date: Timestamp,

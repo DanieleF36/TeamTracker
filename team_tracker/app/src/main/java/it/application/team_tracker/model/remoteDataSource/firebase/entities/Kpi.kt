@@ -1,7 +1,7 @@
 package it.application.team_tracker.model.remoteDataSource.firebase.entities
 
 data class Kpi(
-    override val id: String,
+    override var id: String,
     val name: String,
     val value: Int,
     val userId: String

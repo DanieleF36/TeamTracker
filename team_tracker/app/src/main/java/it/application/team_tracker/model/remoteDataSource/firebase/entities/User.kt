@@ -3,7 +3,7 @@ package it.application.team_tracker.model.remoteDataSource.firebase.entities
 import com.google.firebase.firestore.PropertyName
 
 data class User(
-    override val id: String,
+    override var id: String,
     val nickname: String,
     @get:PropertyName("fullname")
     val fullName: String,

@@ -3,7 +3,7 @@ package it.application.team_tracker.model.remoteDataSource.firebase.entities
 import com.google.firebase.Timestamp
 
 data class Message(
-    override val id: String,
+    override var id: String,
     val message: String,
     val date: Timestamp,
     val teamId: String?,

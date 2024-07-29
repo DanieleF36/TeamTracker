@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 
 
 data class Team (
-    override val id: String,
+    override var id: String,
     val name: String,
     val description: String?,
     val invitationLink: String?,
