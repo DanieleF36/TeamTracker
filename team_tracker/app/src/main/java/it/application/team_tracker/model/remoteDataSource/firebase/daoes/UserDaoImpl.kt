@@ -157,9 +157,9 @@ class UserDaoImpl: FirebaseDAO(), UserDAO {
     }
 
     override fun getTeamsWithUpdate(userId: String): Flow<Pair<ChangeType, Team>?> = callbackFlow{
-        getDocument<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").collect{ user ->
+        getDocumentWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.User>("/users/$userId").collect{ user ->
             if(user != null) {
-                val query = db.collection("/teams").whereIn("id", user.teamMembers.keys.toList())
+                val query = db.collection("/teams").whereIn("id", user.second.teamMembers.keys.toList())
                 getCollectionWithUpdate<it.application.team_tracker.model.remoteDataSource.firebase.entities.Team>(query).map {
                     if(it != null)
                         trySend(Pair(it.first, fromRemoteToNeutral(it.second)))
