@@ -11,6 +11,7 @@ import it.application.team_tracker.model.entities.Team
 import it.application.team_tracker.model.exception.InternetUnavailableException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
@@ -21,6 +22,7 @@ import javax.inject.Inject
 
 class TeamModelImpl: TeamModel {
     private val teams = mutableStateListOf<Team?>(null)
+    private var getUserTeamCoroutine: Job? = null
     @Inject
     lateinit var local: LocalDataSource
     //assumption: in the absence of internet the RemoteDataSource caches the queries and will do them as soon as the internet is back
@@ -28,7 +30,9 @@ class TeamModelImpl: TeamModel {
     lateinit var remote: RemoteDataSource
     //TODO filter
     override fun getUserTeam(userId: String, filter: SearchFilter): List<Team?> {
-        CoroutineScope(Dispatchers.IO).launch {
+        getUserTeamCoroutine?.cancel()
+        teams.clear()
+        getUserTeamCoroutine = CoroutineScope(Dispatchers.IO).launch {
             try {
                 remote.userDao().getTeamsWithUpdate(userId).collect {
                     if (it != null) {
