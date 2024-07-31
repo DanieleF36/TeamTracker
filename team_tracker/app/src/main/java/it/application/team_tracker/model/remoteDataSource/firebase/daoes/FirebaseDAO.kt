@@ -159,6 +159,7 @@ abstract class FirebaseDAO {
      * this will upload the photo present at localUri and save it on the storage in /users/$id/profilePicture or /teams/$id/profilePicture based on user value
      * and returns the path where it's saved
      */
+    //TODO cambiare user, non permette di mettere foto anche a cose che non sono team e user
     protected fun uploadPhoto(localUri: Uri, user: Boolean, id: String): Flow<String?> = callbackFlow {
         val path = if(user) "/users/$id/profilePicture" else "/teams/$id/profilePicture"
         val ref = storage.child(path)
