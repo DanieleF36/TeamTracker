@@ -31,10 +31,29 @@ class TeamDaoImpl: FirebaseDAO(), TeamDAO {
         }
     }
 
+    override fun changePhoto(uri: Uri, teamId: String): Flow<String?> {
+        return uploadPhoto(uri, false, teamId)
+    }
+
+    override fun deletePhoto(teamId: String): Flow<Boolean> {
+        return super.deletePhoto(false, teamId)
+    }
+
     override fun removeUser(teamId: String, userId: String): Flow<Boolean> = callbackFlow{
         val batch = db.batch()
         batch.update(db.document("/team/$teamId"),"membersAndRole.$userId", FieldValue.delete())
         batch.update(db.document("/tasks/$teamId"),"members", FieldValue.arrayRemove(userId))
+        batch.commit().addOnSuccessListener {
+            trySend(true)
+        }.addOnFailureListener {
+            trySend(false)
+        }
+    }
+
+    override fun addUser(teamId: String, userId: String, role: String): Flow<Boolean> = callbackFlow{
+        val batch = db.batch()
+        batch.update(db.document("/team/$teamId"),"membersAndRole.$userId", FieldValue.arrayUnion(role))
+        batch.update(db.document("/tasks/$teamId"),"members", FieldValue.arrayUnion(userId))
         batch.commit().addOnSuccessListener {
             trySend(true)
         }.addOnFailureListener {
