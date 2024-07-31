@@ -15,5 +15,7 @@ interface UserModel {
     fun updateLoggedUser(new: User): Flow<Boolean>
     fun getUserLikeNickname(nick: String): Flow<User?>
     fun getUser(id: String): Flow<User?>
+    //TODO se lo faccio restituire User? i cambiamenti allo stato poi si riflettono?
+    fun getLoggedUser(): User?
     fun setFavoriteTeam(teamId: String, userId: String, add: Boolean): Flow<Boolean>
 }
