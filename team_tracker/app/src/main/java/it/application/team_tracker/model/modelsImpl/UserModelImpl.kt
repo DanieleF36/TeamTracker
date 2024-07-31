@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -68,10 +69,15 @@ class UserModelImpl @Inject constructor(): UserModel {
     override fun updateLoggedUser(new: User): Flow<Boolean> {
         if(loggedUser.value == null)
             throw IllegalStateException("No user is logged")
+        if(new.id != loggedUser.value!!.id)
+            throw IllegalArgumentException("You are trying to update a different user from logged one")
+        if(!validateUser(new))
+            throw IllegalArgumentException("User is not well defined")
+
         if(loggedUser.value!!.photo != new.photo){
             if(new.photo != null) {
-                return remote.userDao().changePhoto(new.photo, new.id).onEach {
-                    if(it != null)
+                return remote.userDao().changePhoto(new.photo, new.id).onCompletion {
+                    if(it == null || it is InternetUnavailableException)
                         local.userDao().changePhoto(new.photo, new.id)
                 }.flatMapConcat { newUri ->
                     if (newUri != null)
@@ -81,8 +87,8 @@ class UserModelImpl @Inject constructor(): UserModel {
                 }
             }
             else{
-                return remote.userDao().deletePhoto(loggedUser.value!!.id).onEach {
-                    if(it)
+                return remote.userDao().deletePhoto(loggedUser.value!!.id).onCompletion {
+                    if(it == null || it is InternetUnavailableException)
                         local.userDao().deletePhoto(new.id)
                 }.flatMapConcat { res ->
                     if(res)
@@ -96,14 +102,28 @@ class UserModelImpl @Inject constructor(): UserModel {
     }
 
     private fun updateLoggedUserDoc(new: User): Flow<Boolean> {
-        return remote.userDao().updateUser(loggedUser.value!!, new).onEach {
-            if(it)
+        if(!validateUser(new))
+            throw IllegalArgumentException("User is not well defined")
+        return remote.userDao().updateUser(loggedUser.value!!, new).onCompletion {
+            if(it == null || it is InternetUnavailableException)
                 local.userDao().updateUser(loggedUser.value!!, new)
         }
     }
 
     private fun validateUser(u: User): Boolean{
-        TODO()
+        if(u.fullName.isBlank())
+            return false
+        if(u.nickname.isBlank() || u.nickname.length < 4)
+            return false
+        if(u.email.isBlank() || !u.email.contains("@"))
+            return false
+        if(u.description.isBlank())
+            return false
+        if(u.location.isBlank() || u.location.length <3)
+            return false
+        if(u.phone.isBlank() || u.phone.length <10)
+            return false
+        return true
     }
 
     override fun getUserLikeNickname(nick: String): Flow<User?> {
@@ -138,11 +158,14 @@ class UserModelImpl @Inject constructor(): UserModel {
         }
     }
 
+    override fun getLoggedUser(): User? {
+        return _loggedUser.value
+    }
+
     override fun setFavoriteTeam(teamId: String, userId: String, add: Boolean): Flow<Boolean> {
-        return remote.userDao().setFavoriteTeam(teamId, userId, add).onEach {
-            if(it){
+        return remote.userDao().setFavoriteTeam(teamId, userId, add).onCompletion {
+            if(it == null || it is InternetUnavailableException)
                 local.userDao().setFavoriteTeam(teamId, userId, add)
-            }
         }
     }
 
