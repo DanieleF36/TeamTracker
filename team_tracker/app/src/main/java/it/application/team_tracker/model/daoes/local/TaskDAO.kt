@@ -24,13 +24,13 @@ interface TaskDAO {
      */
     fun addTask(task: Task): Flow<String>
 
-    fun updateTask(taskId: String): Flow<Boolean>
+    fun updateTask(old: Task, new: Task): Flow<Boolean>
 
     fun removeTask(taskId: String): Flow<Boolean>
 
     fun removeUser(taskId: String, userId: String): Flow<Boolean>
 
-    fun updateUserRole(userId: String, newRole: String): Flow<Boolean>
+    fun updateUserRole(taskId: String, userId: String, newRole: String): Flow<Boolean>
     /**
      * returns the comments the of the task or null if no comment has been created
      */
